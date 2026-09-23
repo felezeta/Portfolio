@@ -305,6 +305,48 @@
     clip-path: polygon(0 0, 100% 0, 92% 100%, 0% 100%);
   }
 
+  .mv-frame{ position: relative; }
+
+  .mv-poster-btn{
+    all: unset;
+    cursor: pointer;
+       position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px;
+    background: linear-gradient(160deg, var(--ink-panel) 0%, #0d1122 100%);
+  }
+  .mv-poster-btn .mv-icon{
+    width: 46px; height: 46px;
+    border: 2px solid var(--red);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--red);
+    font-size: 1.1rem;
+  }
+  .mv-poster-btn .mv-label{
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .mv-poster-btn:hover .mv-icon{ background: var(--red); color: var(--ink); }
+
+  .mv-download{
+    display: inline-block;
+    margin-top: 10px;
+    margin-left: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--paper);
+    background: transparent;
+    border: 1px solid var(--red-deep);
+    padding: 3px 10px;
+    text-decoration: none;
+  }
+  .mv-download:hover{ border-color: var(--red); color: var(--red); }
+  
   a.contact-link{
     color: var(--red);
     font-weight: 700;
@@ -436,18 +478,20 @@
 
         <div class="project-card">
 
-            <model-viewer
-                src="SOFA_Stand.glb"
-                poster="SOFA_Stand.png"
-                reveal="interaction"
-                loading="lazy"
-                camera-controls
-                auto-rotate
-                reveal="auto"
-                loading="eager"
-                shadow-intensity="1"
-                style="width:100%; height:300px;">
-            </model-viewer>
+            <div class="mv-frame">
+                <model-viewer
+                    src="SOFA_Stand.glb"
+                    camera-controls
+                    auto-rotate
+                    loading="lazy"
+                    shadow-intensity="1"
+                    style="width:100%; height:300px; display:block;">
+                </model-viewer>
+                <button class="mv-poster-btn" onclick="this.style.display='none'">
+                    <span class="mv-icon">▶</span>
+                    <span class="mv-label">Ver modelo 3D</span>
+                </button>
+            </div>
 
             <h3>Render 3D — Stand SOFA 2026</h3>
 
@@ -456,19 +500,34 @@
             </p>
 
             <span class="tag">Blender · 3D</span>
+                         <a class="mv-download" href="SOFA_Stand.glb" download>Descargar .glb</a> 
 
         </div>
 
         <div class="project-card">
 
-            <model-viewer
-                src="Fele_septiembre_2026_diseno.glb"
-                camera-controls
-                auto-rotate
-                reveal="auto"
-                loading="eager"
+            <div class="mv-frame">
+                <model-viewer
+                    src="Fele_septiembre_2026_diseno.glb"
+                    camera-controls
+                    auto-rotate
+                    loading="lazy"
+                    shadow-intensity="1"
+                    style="width:100%; height:300px; display:block;">
+                </model-viewer>
+                <button class="mv-poster-btn" onclick="this.style.display='none'">
+                    <span class="mv-icon">▶</span>
+                    <span class="mv-label">Ver modelo 3D</span>
+                </button>
+            </div>
+
+        </div>
                 shadow-intensity="1"
                 style="width:100%; height:300px;">
+                <button slot="poster" class="mv-poster-btn">
+                    <span class="mv-icon">▶</span>
+                    <span class="mv-label">Ver modelo 3D</span>
+                </button>
             </model-viewer>
 
             <h3>Diseño textil — Nimbado</h3>
@@ -478,7 +537,9 @@
             </p>
 
         <span class="tag">Photoshop · DTF</span>
-      </div>
+                       <a class="mv-download" href="Fele_septiembre_2026_diseno.glb" download>Descargar .glb</a> 
+
+                </div>
     </div>
   </section>
 
