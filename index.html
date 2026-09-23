@@ -371,6 +371,9 @@
   body.loading{ overflow: hidden; }
 </style>
 </head>
+
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
 <body class="loading">
 
 <div id="preloader">
@@ -426,21 +429,47 @@
     </div>
   </section>
 
-  <section class="reveal" id="proyectos">
+<section class="reveal" id="proyectos">
     <h2>Proyectos</h2>
+
     <div class="project-grid">
-      <div class="project-card">
-        <div class="thumb">diseño.glb<br>(imagen o video)</div>
-        <model-viewer src="diseño.glb" alt="Render 3D de stand comercial para feria" auto-rotate camera-controls ar ar-modes="webxr scene-viewer quick-look" style="width: 100%; height: 200px;"></model-viewer>
-        <h3>Render 3D — Stand SOFA 2026</h3>
-        <p>Diseño y modelado en Blender de una estructura comercial para exhibición en feria.</p>
-        <span class="tag">Blender · 3D</span>
-      </div>
-      <div class="project-card">
-        <div class="thumb">Fele_septiembre_2026_diseño.glb</div>
-        <model-viewer src="Fele_septiembre_2026_diseño.glb" alt="Render 3D de escenario para concierto de Fële" auto-rotate camera-controls ar ar-modes="webxr scene-viewer quick-look" style="width: 100%; height: 200px;"></model-viewer>
-        <h3>Diseño textil — Nimbado</h3>
-        <p>Piezas gráficas y preparación de archivos para impresión DTF de la colección Nimbado.</p>
+
+        <div class="project-card">
+
+            <model-viewer
+                src="SOFA_Stand.glb"
+                camera-controls
+                auto-rotate
+                shadow-intensity="1"
+                style="width:100%; height:300px;">
+            </model-viewer>
+
+            <h3>Render 3D — Stand SOFA 2026</h3>
+
+            <p>
+                Diseño y modelado en Blender de una estructura comercial para exhibición en feria.
+            </p>
+
+            <span class="tag">Blender · 3D</span>
+
+        </div>
+
+        <div class="project-card">
+
+            <model-viewer
+                src="Fele_septiembre_2026_diseno.glb"
+                camera-controls
+                auto-rotate
+                shadow-intensity="1"
+                style="width:100%; height:300px;">
+            </model-viewer>
+
+            <h3>Diseño textil — Nimbado</h3>
+
+            <p>
+                Piezas gráficas y preparación de archivos para impresión DTF de camisetas 
+            </p>
+
         <span class="tag">Photoshop · DTF</span>
       </div>
     </div>
