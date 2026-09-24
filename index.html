@@ -499,6 +499,269 @@
     nav.top-nav a{ padding: 8px 7px; font-size: 0.74rem; white-space: nowrap; flex-shrink: 0; }
   }
 
+  /* =====================================================================
+     GALERÍA NIMBADO — collage en la tarjeta del proyecto. Al tocarlo se
+     abren las fotos como recuadros flotantes; al pasar el cursor la
+     elegida se agranda, y al tocarla se ve en grande con ‹ › para pasar.
+     ===================================================================== */
+  .collage{
+    all: unset;
+    cursor: pointer;
+    position: relative;
+    display: block;
+    width: 100%;
+    height: clamp(260px, 75vw, 380px);
+    margin-bottom: 14px;
+    overflow: hidden;
+    background: var(--ink);
+    transition: box-shadow 0.35s ease;
+  }
+  .collage-tiles{
+    position: absolute; inset: 0;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 4px;
+  }
+  .collage-tiles img{
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.6) saturate(0.95);
+    transition: filter 0.35s ease, transform 0.6s ease;
+  }
+  .collage-tiles img:first-child{ grid-row: 1 / span 2; }
+  .collage-cta{
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px;
+  }
+  .collage-icon{
+    width: 46px; height: 46px;
+    border: 2px solid var(--red);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--red);
+    background: rgba(12,10,10,0.55);
+    font-size: 1.05rem;
+    transition: background 0.25s ease, color 0.25s ease, box-shadow 0.35s ease;
+  }
+  .collage-label{
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--paper);
+    text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+  }
+  @media (hover: hover){
+    .collage:hover{
+      box-shadow: 0 0 0 1px var(--red), 0 0 22px rgba(200,30,42,0.55), 0 0 60px rgba(200,30,42,0.25);
+    }
+    .collage:hover .collage-tiles img{ filter: brightness(0.85) saturate(1.05); transform: scale(1.04); }
+    .collage:hover .collage-icon{ background: var(--red); color: var(--ink); box-shadow: 0 0 18px rgba(200,30,42,0.85); }
+  }
+  .collage:focus-visible{
+    box-shadow: 0 0 0 1px var(--red), 0 0 22px rgba(200,30,42,0.55), 0 0 60px rgba(200,30,42,0.25);
+  }
+  .collage:focus-visible .collage-icon{ background: var(--red); color: var(--ink); }
+
+  /* Capa de la galería: va fuera de las secciones (su clip-path la
+     recortaría) y por encima del menú fijo. */
+  .gallery{
+    position: fixed; inset: 0;
+    z-index: 80;
+    display: flex; flex-direction: column;
+  }
+  .gallery[hidden]{ display: none; }
+  body.gallery-open{ overflow: hidden; }
+  .gallery-backdrop{
+    position: absolute; inset: 0;
+    background: rgba(12,10,10,0.9);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .gallery.is-open .gallery-backdrop{ opacity: 1; }
+  .gallery-head{
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    padding: 14px var(--frame-pad);
+    border-bottom: 1px solid var(--red-deep);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .gallery.is-open .gallery-head{ opacity: 1; }
+  .gallery-title{
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+    color: var(--paper);
+    border-left: 4px solid var(--red);
+    padding-left: 12px;
+  }
+  .gallery-title small{
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-dim);
+    margin-left: 10px;
+  }
+  .gallery-close{
+    all: unset;
+    cursor: pointer;
+    flex-shrink: 0;
+    width: 40px; height: 40px;
+    border: 2px solid var(--red);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--red);
+    font-size: 1rem;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .gallery-close:hover,
+  .gallery-close:focus-visible{ background: var(--red); color: var(--ink); }
+
+  .gallery-stage{
+    position: relative; z-index: 1;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex; flex-direction: column;
+    padding: clamp(28px, 5vw, 60px) var(--frame-pad);
+  }
+  /* margin:auto centra las fotos en vertical cuando caben, y si no caben
+     deja hacer scroll desde la primera (align-content:center las cortaría). */
+  .gallery-cards{
+    margin-block: auto;
+    display: flex; flex-wrap: wrap;
+    justify-content: center;
+    align-items: center; /* sin estirar: cada recuadro conserva su proporción */
+    gap: clamp(14px, 3vw, 36px);
+  }
+  /* Cada recuadro flota con su propia inclinación (--r), entra con un
+     pequeño retraso (--d) y se mece a su propio ritmo (--f). */
+  .float-card{
+    all: unset;
+    cursor: zoom-in;
+    position: relative;
+    width: clamp(110px, 14.5vw, 210px);
+    aspect-ratio: var(--ar, 4 / 5);
+    padding: 6px;
+    background: var(--ink-panel);
+    border: 1px solid var(--red-deep);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    opacity: 0;
+    transform: translateY(50px) rotate(var(--r)) scale(0.9);
+    transition: transform 0.5s cubic-bezier(.2,.9,.3,1.15), opacity 0.45s ease,
+                box-shadow 0.3s ease, filter 0.3s ease;
+    transition-delay: var(--d);
+  }
+  /* Fotos horizontales: recuadro apaisado con la proporción real de la
+     foto (--ar), así no se recorta la prenda. */
+  .float-card.is-wide{ width: clamp(150px, 19vw, 300px); }
+  .gallery.is-open .float-card{ opacity: 1; transform: translateY(0) rotate(var(--r)) scale(1); }
+  .gallery.is-settled .float-card{ transition-delay: 0s; }
+  .float-bob{
+    display: block;
+    width: 100%; height: 100%;
+    animation: floatBob 6s ease-in-out infinite;
+    animation-delay: var(--f);
+  }
+  @keyframes floatBob{
+    0%, 100%{ transform: translateY(0); }
+    50%{ transform: translateY(-9px); }
+  }
+  .float-card img{
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    background: var(--ink);
+  }
+  /* La foto bajo el cursor se endereza, se agranda y pasa al frente;
+     las demás se oscurecen para darle protagonismo. */
+  @media (hover: hover){
+    .gallery.is-settled .float-card:hover{
+      z-index: 5;
+      transform: rotate(0deg) scale(1.55);
+      box-shadow: 0 0 0 1px var(--red), 0 0 30px rgba(200,30,42,0.5), 0 24px 60px rgba(0,0,0,0.85);
+    }
+    .gallery.is-settled .gallery-stage:has(.float-card:hover) .float-card:not(:hover){
+      filter: brightness(0.45) saturate(0.8);
+    }
+  }
+  .gallery.is-settled .float-card:focus-visible{
+    z-index: 5;
+    transform: rotate(0deg) scale(1.3);
+    box-shadow: 0 0 0 2px var(--red), 0 0 30px rgba(200,30,42,0.5);
+  }
+
+  /* Vista ampliada de una foto, con ‹ › (y deslizar en el celular). */
+  .gallery-viewer{
+    position: absolute; inset: 0;
+    z-index: 4;
+    display: flex; align-items: center; justify-content: center;
+    gap: clamp(6px, 2vw, 24px);
+    padding: 70px clamp(8px, 3vw, 40px) 40px;
+    background: rgba(12,10,10,0.96);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .gallery-viewer[hidden]{ display: none; }
+  .gallery-viewer.is-open{ opacity: 1; }
+  .gv-figure{
+    margin: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    max-width: 100%;
+    min-width: 0;
+  }
+  .gv-figure img{
+    max-width: min(88vw, 1100px);
+    max-height: calc(100vh - 150px);
+    object-fit: contain;
+    display: block;
+    border: 1px solid var(--red-deep);
+    box-shadow: 0 0 0 1px var(--red-deep), 0 30px 80px rgba(0,0,0,0.9);
+    cursor: zoom-out;
+  }
+  .gv-count{
+    font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+  }
+  .gv-nav{
+    all: unset;
+    cursor: pointer;
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    border: 2px solid var(--red);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--red);
+    font-size: 1.4rem;
+    line-height: 1;
+    background: rgba(12,10,10,0.6);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .gv-nav:hover,
+  .gv-nav:focus-visible{ background: var(--red); color: var(--ink); }
+  @media (max-width: 640px){
+    .gallery-viewer{ padding: 70px 6px 30px; }
+    .gv-nav{ position: absolute; bottom: 22px; width: 42px; height: 42px; }
+    .gv-prev{ left: 22%; }
+    .gv-next{ right: 22%; }
+    .gv-figure img{ max-width: 94vw; max-height: calc(100vh - 190px); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .float-bob{ animation: none; }
+    .float-card{ transition: opacity 0.2s linear; transform: rotate(var(--r)); }
+    .gallery.is-open .float-card{ transform: rotate(var(--r)); }
+    .collage-tiles img{ transition: none; transform: none !important; }
+  }
+
   footer{ text-align:center; color: var(--text-dim); font-size: 0.78rem; padding: 40px 0 10px; }
 
   /* =====================================================================
@@ -770,7 +1033,17 @@
 
         <div class="project-card" id="p-nimbado">
 
-            <div class="thumb">Reemplaza este bloque por tus diseños textiles de Nimbado</div>
+            <button class="collage" id="nimbadoCollage" type="button" aria-haspopup="dialog" aria-controls="galeriaNimbado" aria-label="Abrir galería de ropa Nimbado (8 fotos)">
+                <span class="collage-tiles">
+                    <img src="img/nimbado/buzo-naranja-frente-s.jpg" alt="" loading="lazy" decoding="async">
+                    <img src="img/nimbado/buzo-blanco-espalda-s.jpg" alt="" loading="lazy" decoding="async">
+                    <img src="img/nimbado/camiseta-fck-calle-s.jpg" alt="" loading="lazy" decoding="async">
+                </span>
+                <span class="collage-cta">
+                    <span class="collage-icon">⊞</span>
+                    <span class="collage-label">Ver galería · 8 fotos</span>
+                </span>
+            </button>
 
             <h3>Diseño textil — Nimbado</h3>
 
@@ -824,6 +1097,50 @@
   </section>
 
   <footer>Portafolio de Santiago Flórez Trujillo </footer>
+</div>
+
+<div class="gallery" id="galeriaNimbado" role="dialog" aria-modal="true" aria-label="Galería de ropa Nimbado" hidden>
+  <div class="gallery-backdrop" data-close></div>
+  <div class="gallery-head">
+    <span class="gallery-title">Nimbado<small>8 fotos</small></span>
+    <button class="gallery-close" type="button" data-close aria-label="Cerrar galería">✕</button>
+  </div>
+  <div class="gallery-stage">
+    <div class="gallery-cards">
+        <button class="float-card is-wide" type="button" style="--r:-5deg; --d:0.0s; --f:-0.0s; --ar:800 / 500" aria-label="Ver en grande: Buzo FÉLE naranja, frente">
+          <span class="float-bob"><img data-src="img/nimbado/buzo-naranja-frente-s.jpg" data-full="img/nimbado/buzo-naranja-frente-l.jpg" alt="Buzo FÉLE naranja, frente" width="800" height="500" decoding="async"></span>
+        </button>
+        <button class="float-card is-wide" type="button" style="--r:-1deg; --d:0.06s; --f:-5.1s; --ar:800 / 500" aria-label="Ver en grande: Buzo FÉLE naranja, espalda">
+          <span class="float-bob"><img data-src="img/nimbado/buzo-naranja-espalda-s.jpg" data-full="img/nimbado/buzo-naranja-espalda-l.jpg" alt="Buzo FÉLE naranja, espalda" width="800" height="500" decoding="async"></span>
+        </button>
+        <button class="float-card is-wide" type="button" style="--r:3deg; --d:0.12s; --f:-4.2s; --ar:800 / 500" aria-label="Ver en grande: Buzo FÉLE blanco, espalda">
+          <span class="float-bob"><img data-src="img/nimbado/buzo-blanco-espalda-s.jpg" data-full="img/nimbado/buzo-blanco-espalda-l.jpg" alt="Buzo FÉLE blanco, espalda" width="800" height="500" decoding="async"></span>
+        </button>
+        <button class="float-card is-wide" type="button" style="--r:-4deg; --d:0.18s; --f:-3.3s; --ar:800 / 450" aria-label="Ver en grande: Buzo panda-dragón: frente, espalda y lado">
+          <span class="float-bob"><img data-src="img/nimbado/buzo-panda-dragon-s.jpg" data-full="img/nimbado/buzo-panda-dragon-l.jpg" alt="Buzo panda-dragón: frente, espalda y lado" width="800" height="450" decoding="async"></span>
+        </button>
+        <button class="float-card is-wide" type="button" style="--r:0deg; --d:0.24s; --f:-2.4s; --ar:800 / 450" aria-label="Ver en grande: Camiseta FCK blanca, frente y espalda">
+          <span class="float-bob"><img data-src="img/nimbado/camiseta-fck-blanca-s.jpg" data-full="img/nimbado/camiseta-fck-blanca-l.jpg" alt="Camiseta FCK blanca, frente y espalda" width="800" height="450" decoding="async"></span>
+        </button>
+        <button class="float-card" type="button" style="--r:4deg; --d:0.3s; --f:-1.5s; --ar:640 / 800" aria-label="Ver en grande: Camiseta FCK blanca puesta, en la calle de noche">
+          <span class="float-bob"><img data-src="img/nimbado/camiseta-fck-calle-s.jpg" data-full="img/nimbado/camiseta-fck-calle-l.jpg" alt="Camiseta FCK blanca puesta, en la calle de noche" width="640" height="800" decoding="async"></span>
+        </button>
+        <button class="float-card" type="button" style="--r:-3deg; --d:0.36s; --f:-0.6s; --ar:640 / 800" aria-label="Ver en grande: Camiseta FCK blanca, detalle del estampado">
+          <span class="float-bob"><img data-src="img/nimbado/camiseta-fck-detalle-s.jpg" data-full="img/nimbado/camiseta-fck-detalle-l.jpg" alt="Camiseta FCK blanca, detalle del estampado" width="640" height="800" decoding="async"></span>
+        </button>
+        <button class="float-card is-wide" type="button" style="--r:1deg; --d:0.42s; --f:-5.7s; --ar:800 / 450" aria-label="Ver en grande: Camiseta FCK negra, frente y espalda">
+          <span class="float-bob"><img data-src="img/nimbado/camiseta-fck-negra-s.jpg" data-full="img/nimbado/camiseta-fck-negra-l.jpg" alt="Camiseta FCK negra, frente y espalda" width="800" height="450" decoding="async"></span>
+        </button>
+    </div>
+  </div>
+  <div class="gallery-viewer" hidden>
+    <button class="gv-nav gv-prev" type="button" aria-label="Foto anterior">‹</button>
+    <figure class="gv-figure">
+      <img alt="">
+      <figcaption class="gv-count"></figcaption>
+    </figure>
+    <button class="gv-nav gv-next" type="button" aria-label="Foto siguiente">›</button>
+  </div>
 </div>
 
 <script>
@@ -984,6 +1301,106 @@
     window.addEventListener('resize', onScroll);
     updateArtFall(); // estado correcto si la página abre ya scrolleada
   }
+
+  // Galería Nimbado: el collage abre las fotos como recuadros flotantes.
+  // Las fotos no se descargan hasta abrir la galería (data-src → src),
+  // igual que los modelos 3D, para no gastar datos en el celular.
+  (function(){
+    const trigger = document.getElementById('nimbadoCollage');
+    const gallery = document.getElementById('galeriaNimbado');
+    if (!trigger || !gallery) return;
+    const cards = Array.from(gallery.querySelectorAll('.float-card'));
+    const viewer = gallery.querySelector('.gallery-viewer');
+    const viewerImg = viewer.querySelector('.gv-figure img');
+    const viewerCount = viewer.querySelector('.gv-count');
+    const closeBtn = gallery.querySelector('.gallery-close');
+    let current = 0;
+    let settleTimer = null;
+
+    function openGallery(){
+      cards.forEach(card => {
+        const img = card.querySelector('img');
+        if (!img.getAttribute('src')) img.src = img.dataset.src;
+      });
+      gallery.hidden = false;
+      document.body.classList.add('gallery-open');
+      // Un fotograma de espera para que la entrada animada arranque.
+      requestAnimationFrame(() => requestAnimationFrame(() => gallery.classList.add('is-open')));
+      // Cuando todos entraron, el hover responde sin retraso.
+      settleTimer = setTimeout(() => gallery.classList.add('is-settled'), 500 + cards.length * 60);
+      closeBtn.focus({ preventScroll: true });
+    }
+
+    function closeGallery(){
+      closeViewer();
+      clearTimeout(settleTimer);
+      gallery.classList.remove('is-open', 'is-settled');
+      document.body.classList.remove('gallery-open');
+      setTimeout(() => { gallery.hidden = true; }, 350);
+      trigger.focus({ preventScroll: true });
+    }
+
+    function showPhoto(i){
+      current = (i + cards.length) % cards.length;
+      const img = cards[current].querySelector('img');
+      viewerImg.src = img.dataset.full || img.dataset.src;
+      viewerImg.alt = img.alt;
+      viewerCount.textContent = (current + 1) + ' / ' + cards.length;
+    }
+
+    function openViewer(i){
+      showPhoto(i);
+      viewer.hidden = false;
+      requestAnimationFrame(() => viewer.classList.add('is-open'));
+    }
+
+    function closeViewer(){
+      if (viewer.hidden) return;
+      viewer.classList.remove('is-open');
+      viewer.hidden = true;
+      if (cards[current]) cards[current].focus({ preventScroll: true });
+    }
+
+    trigger.addEventListener('click', openGallery);
+    gallery.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', closeGallery));
+    // Tocar el espacio vacío entre fotos también cierra.
+    const stage = gallery.querySelector('.gallery-stage');
+    stage.addEventListener('click', e => {
+      if (e.target === stage || e.target.classList.contains('gallery-cards')) closeGallery();
+    });
+    // Si una foto está pegada a un borde, al agrandarse crece hacia adentro
+    // en vez de cortarse contra el borde de la galería.
+    cards.forEach(card => card.addEventListener('pointerenter', () => {
+      const c = card.getBoundingClientRect();
+      const s = stage.getBoundingClientRect();
+      const y = c.top - s.top < c.height * 0.3 ? 'top' : s.bottom - c.bottom < c.height * 0.3 ? 'bottom' : 'center';
+      const x = c.left - s.left < c.width * 0.3 ? 'left' : s.right - c.right < c.width * 0.3 ? 'right' : 'center';
+      card.style.transformOrigin = x + ' ' + y;
+    }));
+    cards.forEach((card, i) => card.addEventListener('click', () => openViewer(i)));
+    viewer.querySelector('.gv-prev').addEventListener('click', e => { e.stopPropagation(); showPhoto(current - 1); });
+    viewer.querySelector('.gv-next').addEventListener('click', e => { e.stopPropagation(); showPhoto(current + 1); });
+    viewer.addEventListener('click', e => {
+      if (e.target === viewer || e.target === viewerImg) closeViewer();
+    });
+
+    // Deslizar a los lados en el celular para pasar de foto.
+    let touchX = null;
+    viewer.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+    viewer.addEventListener('touchend', e => {
+      if (touchX === null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 45) showPhoto(current + (dx < 0 ? 1 : -1));
+      touchX = null;
+    });
+
+    document.addEventListener('keydown', e => {
+      if (gallery.hidden) return;
+      if (e.key === 'Escape') { viewer.hidden ? closeGallery() : closeViewer(); }
+      else if (!viewer.hidden && e.key === 'ArrowRight') showPhoto(current + 1);
+      else if (!viewer.hidden && e.key === 'ArrowLeft') showPhoto(current - 1);
+    });
+  })();
 </script>
 </body>
 </html>
