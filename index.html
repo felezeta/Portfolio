@@ -24,6 +24,7 @@
     --gold:       #a8843f;
     --text-dim:   #9c8f82;
     --nav-h: 54px;
+    --frame-pad: clamp(20px, 4vw, 56px); /* margen lateral del contenido */
   }
   * { box-sizing: border-box; }
   html{ scroll-behavior: smooth; }
@@ -80,10 +81,13 @@
 
   .frame{
     width: 100%;
-    padding: clamp(20px, 4vw, 56px);
-    padding-top: calc(var(--nav-h) + clamp(20px, 4vw, 56px));
+    padding: var(--frame-pad);
+    padding-top: calc(var(--nav-h) + var(--frame-pad));
     position: relative;
     z-index: 1;
+    /* Lo que sobresale a los lados (arte de "Sobre mí") se corta justo en
+       el borde de la pantalla, sin crear scroll horizontal. */
+    overflow-x: clip;
   }
 
   /* =====================================================================
@@ -183,19 +187,29 @@
      desde el primer render — nunca dependen de un script para mostrarse. */
   .js-ready section.reveal{
     opacity: 0;
-    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    clip-path: polygon(calc(-1 * var(--frame-pad)) 0, calc(-1 * var(--frame-pad)) 0,
+                       calc(-1 * var(--frame-pad)) 100%, calc(-1 * var(--frame-pad)) 100%);
     transition: opacity 1.2s ease, clip-path 1.4s cubic-bezier(.2,.9,.3,1);
   }
   .js-ready section.reveal.in-view{
     opacity: 1;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    clip-path: polygon(calc(-1 * var(--frame-pad)) 0, calc(100% + var(--frame-pad)) 0,
+                       calc(100% + var(--frame-pad)) 100%, calc(-1 * var(--frame-pad)) 100%);
   }
   @media (prefers-reduced-motion: reduce){
     .js-ready section.reveal{ transition: opacity 0.2s linear; clip-path: none; opacity: 1; }
   }
   /* Arte de fondo en "Sobre mí": tus ilustraciones, discretas detrás del
      texto — mismo concepto del boceto de referencia, con tu paleta. */
-  #sobre-mi{ position: relative; overflow: hidden; }
+  /* El arte puede salir por los lados hasta el borde de la pantalla
+     (cruzando el margen de .frame), pero no por arriba ni por abajo. */
+  #sobre-mi{ position: relative; }
+  /* Con la animación de revelado activa, ese recorte lo hace su clip-path
+     (ver .js-ready section.reveal); sin ella, se aplica este. */
+  html:not(.js-ready) #sobre-mi{ clip-path: inset(0 calc(-1 * var(--frame-pad))); }
+  @media (prefers-reduced-motion: reduce){
+    .js-ready #sobre-mi{ clip-path: inset(0 calc(-1 * var(--frame-pad))); }
+  }
   .art{
     position: absolute;
     pointer-events: none;
@@ -204,14 +218,17 @@
     opacity: 0.15; /* estado de respaldo sin JS: visible directo, sin animar */
   }
   .art img{ width: 100%; height: 100%; object-fit: contain; display: block; }
+  /* El PNG de la sombrilla tiene ~27% de espacio transparente a la derecha;
+     lo empujamos esa misma proporción para que el dibujo toque el borde. */
   .art-umbrella{
-    top: -8%; right: -14%;
-    width: min(60vw, 620px);
-    height: min(60vw, 620px);
+    --art-w: min(60vw, 620px);
+    top: -8%; right: calc(-1 * var(--frame-pad) - var(--art-w) * 0.27);
+    width: var(--art-w);
+    height: var(--art-w);
     transform: scale(1.04) rotate(-2deg);
   }
   .art-gojo{
-    bottom: -10%; left: -10%;
+    bottom: -10%; left: calc(-1 * var(--frame-pad));
     width: min(38vw, 420px);
     height: min(38vw, 420px);
     transform: scale(1.04) rotate(2deg);
@@ -228,8 +245,8 @@
   }
   #sobre-mi h2, #sobre-mi p, #sobre-mi .stat-row{ position: relative; z-index: 1; }
   @media (max-width: 640px){
-    .art-umbrella{ width: 85vw; height: 85vw; right: -30vw; top: -6%; }
-    .art-gojo{ width: 60vw; height: 60vw; left: -18vw; bottom: -6%; }
+    .art-umbrella{ --art-w: 70vw; top: -6%; }
+    .art-gojo{ width: 55vw; height: 55vw; bottom: -6%; }
   }
 
   section.reveal h2{
@@ -307,31 +324,93 @@
     touch-action: pan-y;
   }
 
+  /* Portada del visor 3D: imagen de vista previa + botón. Al tocarla se
+     queda encima mostrando el progreso, y se desvanece cuando el modelo
+     terminó de cargar (clase .is-hidden, la pone el <script>). */
   .mv-poster-btn{
     all: unset;
     cursor: pointer;
-       position: absolute; inset: 0;
+    position: absolute; inset: 0;
     width: 100%; height: 100%;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 10px;
+    overflow: hidden;
     background: linear-gradient(160deg, var(--ink-panel) 0%, #0d1122 100%);
+    transition: opacity 0.6s ease, visibility 0.6s ease;
   }
+  .mv-poster-btn.is-hidden{ opacity: 0; visibility: hidden; pointer-events: none; }
+  .mv-poster-img{
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(0.55) saturate(0.9);
+    transition: filter 0.35s ease, transform 0.6s ease;
+  }
+  .mv-poster-btn .mv-icon,
+  .mv-poster-btn .mv-label{ position: relative; } /* por encima de la imagen */
   .mv-poster-btn .mv-icon{
     width: 46px; height: 46px;
     border: 2px solid var(--red);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     color: var(--red);
+    background: rgba(12,10,10,0.55);
     font-size: 1.1rem;
+    transition: background 0.25s ease, color 0.25s ease, box-shadow 0.35s ease;
   }
   .mv-poster-btn .mv-label{
     font-family: 'Zen Kaku Gothic New', sans-serif;
     font-size: 0.78rem;
+    font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--text-dim);
+    color: var(--paper);
+    text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+    font-variant-numeric: tabular-nums;
   }
-  .mv-poster-btn:hover .mv-icon{ background: var(--red); color: var(--ink); }
+  .mv-poster-btn.is-loading{ cursor: progress; }
+  .mv-poster-btn.is-loading .mv-icon{ animation: markPulse 1.2s ease-in-out infinite; }
+
+  /* Glow rojo al pasar el cursor (o al enfocar con teclado): brilla el
+     marco del recuadro, el círculo del ▶ y se aclara la imagen. En
+     pantallas táctiles se activa mientras el dedo presiona. */
+  .mv-frame, .thumb-img{ transition: box-shadow 0.35s ease; }
+  @media (hover: hover){
+    .mv-frame:hover:has(.mv-poster-btn:not(.is-hidden)),
+    .thumb-img:hover{
+      box-shadow: 0 0 0 1px var(--red), 0 0 22px rgba(200,30,42,0.55), 0 0 60px rgba(200,30,42,0.25);
+    }
+    .mv-poster-btn:hover .mv-icon{
+      background: var(--red); color: var(--ink);
+      box-shadow: 0 0 18px rgba(200,30,42,0.85);
+    }
+    .mv-poster-btn:hover .mv-poster-img,
+    .thumb-img:hover img{ filter: brightness(0.8) saturate(1.05); transform: scale(1.04); }
+  }
+  .mv-frame:has(.mv-poster-btn:focus-visible),
+  .mv-frame:has(.mv-poster-btn:active){
+    box-shadow: 0 0 0 1px var(--red), 0 0 22px rgba(200,30,42,0.55), 0 0 60px rgba(200,30,42,0.25);
+  }
+  .mv-poster-btn:focus-visible .mv-icon,
+  .mv-poster-btn:active .mv-icon{ background: var(--red); color: var(--ink); box-shadow: 0 0 18px rgba(200,30,42,0.85); }
+  @media (prefers-reduced-motion: reduce){
+    .mv-poster-img, .thumb-img img{ transition: none; transform: none !important; }
+    .mv-poster-btn.is-loading .mv-icon{ animation: none; }
+  }
+
+  /* Imagen fija de proyecto (sin 3D), mismo formato que los visores. */
+  .thumb-img{
+    overflow: hidden;
+    margin-bottom: 14px;
+    height: clamp(260px, 75vw, 380px);
+  }
+  .thumb-img img{
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.9);
+    transition: filter 0.35s ease, transform 0.6s ease;
+  }
 
   .mv-download{
     display: inline-block;
@@ -489,7 +568,8 @@
                     ar-modes="webxr scene-viewer quick-look"
                     alt="Modelo 3D interactivo">
                 </model-viewer>
-                <button class="mv-poster-btn" type="button">
+                <button class="mv-poster-btn" type="button" aria-label="Ver modelo 3D del stand SOFA 2026">
+                    <img class="mv-poster-img" src="SOFA_Stand.jpg" alt="" loading="lazy" decoding="async">
                     <span class="mv-icon">▶</span>
                     <span class="mv-label">Ver modelo 3D</span>
                 </button>
@@ -508,7 +588,9 @@
 
         <div class="project-card">
 
-            <div class="thumb">Reemplaza este bloque por tus diseños textiles de Nimbado</div>
+            <div class="thumb-img">
+                <img src="Nimbado_1.jpeg" alt="Diseño textil de Nimbado" loading="lazy" decoding="async">
+            </div>
 
             <h3>Diseño textil — Nimbado</h3>
 
@@ -534,7 +616,7 @@
                     ar-modes="webxr scene-viewer quick-look"
                     alt="Modelo 3D interactivo">
                 </model-viewer>
-                <button class="mv-poster-btn" type="button">
+                <button class="mv-poster-btn" type="button" aria-label="Ver modelo 3D de Fële">
                     <span class="mv-icon">▶</span>
                     <span class="mv-label">Ver modelo 3D</span>
                 </button>
@@ -640,9 +722,28 @@
   document.querySelectorAll('.mv-frame').forEach(frame => {
     const viewer = frame.querySelector('model-viewer');
     const btn = frame.querySelector('.mv-poster-btn');
+    const label = btn.querySelector('.mv-label');
+    // La portada se queda encima mostrando el % y se desvanece solo cuando
+    // el modelo ya está listo, para no dejar un recuadro vacío mientras carga.
+    viewer.addEventListener('progress', e => {
+      if (btn.classList.contains('is-loading')) {
+        label.textContent = 'Cargando ' + Math.round(e.detail.totalProgress * 100) + '%';
+      }
+    });
+    viewer.addEventListener('load', () => {
+      btn.classList.remove('is-loading');
+      btn.classList.add('is-hidden');
+    });
+    viewer.addEventListener('error', () => {
+      btn.classList.remove('is-loading');
+      label.textContent = 'No se pudo cargar — toca para reintentar';
+      viewer.removeAttribute('src');
+    });
     btn.addEventListener('click', () => {
+      if (btn.classList.contains('is-loading')) return;
+      btn.classList.add('is-loading');
+      label.textContent = 'Cargando 0%';
       viewer.src = viewer.dataset.src;
-      btn.style.display = 'none';
     });
   });
 
