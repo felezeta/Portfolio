@@ -797,6 +797,26 @@
     .collage-tiles img{ transition: none; transform: none !important; }
   }
 
+  /* Reconocimiento dentro de una tarjeta de proyecto (p. ej. una votación). */
+  .award{
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--red-deep);
+    border-left: 3px solid var(--gold);
+    background: rgba(168,132,63,0.06);
+  }
+  .award-rank{
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--gold);
+    font-variant-numeric: tabular-nums;
+  }
+  .award-text{ font-size: 0.8rem; line-height: 1.45; color: var(--text-dim); }
+  .award-text strong{ display: block; color: var(--paper); font-size: 0.85rem; }
+
   footer{ text-align:center; color: var(--text-dim); font-size: 0.78rem; padding: 40px 0 10px; }
 
   /* =====================================================================
@@ -956,7 +976,7 @@
 
         <div class="project-card" id="p-smart-vertical">
 
-            <button class="collage" type="button" aria-haspopup="dialog" aria-controls="galeriaSmartVertical" aria-label="Abrir galería: Smart Vertical Garden (5 imágenes)">
+            <button class="collage" type="button" aria-haspopup="dialog" aria-controls="galeriaSmartVertical" aria-label="Abrir galería: Smart Vertical Garden (6 imágenes)">
                 <span class="collage-tiles">
                     <img src="img/smart-vertical/farming-room-s.jpg" alt="" loading="lazy" decoding="async">
                     <img src="img/smart-vertical/material-s.jpg" alt="" loading="lazy" decoding="async">
@@ -964,7 +984,7 @@
                 </span>
                 <span class="collage-cta">
                     <span class="collage-icon">⊞</span>
-                    <span class="collage-label">Ver galería · 5 imágenes</span>
+                    <span class="collage-label">Ver galería · 6 imágenes</span>
                 </span>
             </button>
 
@@ -974,6 +994,11 @@
             <p>
                 Sistema vertical de hidrocultivo para viviendas pequeñas en Hamburgo: concepto ilustrado, planos técnicos con sensores de pH, EC y temperatura, y piezas de materiales upcycled fabricadas en Fab Lab.
             </p>
+
+            <div class="award">
+                <span class="award-rank">#8</span>
+                <span class="award-text"><strong>Votación de la comunidad</strong>79,8 puntos · el resultado está en la galería</span>
+            </div>
 
             <span class="tag">Diseño de producto · Ilustración técnica</span>
 
@@ -1182,7 +1207,7 @@
 <div class="gallery" id="galeriaSmartVertical" role="dialog" aria-modal="true" aria-label="Galería: Smart Vertical Garden" hidden>
   <div class="gallery-backdrop" data-close></div>
   <div class="gallery-head">
-    <span class="gallery-title">Smart Vertical Garden<small>5 imágenes</small></span>
+    <span class="gallery-title">Smart Vertical Garden<small>6 imágenes</small></span>
     <button class="gallery-close" type="button" data-close aria-label="Cerrar galería">✕</button>
   </div>
   <div class="gallery-stage">
@@ -1201,6 +1226,9 @@
         </button>
         <button class="float-card is-wide" type="button" style="--r:0deg; --d:0.24s; --f:-3.6s; --ar:800 / 450" aria-label="Ver en grande: Plano técnico con tiras LED de espectro completo">
           <span class="float-bob"><img data-src="img/smart-vertical/hydroponik-lamina-s.jpg" data-full="img/smart-vertical/hydroponik-lamina-l.jpg" alt="Plano técnico con tiras LED de espectro completo" width="800" height="450" decoding="async"></span>
+        </button>
+        <button class="float-card is-wide" type="button" style="--r:4deg; --d:0.30s; --f:-4.5s; --ar:1063 / 407" aria-label="Ver en grande: Resultado de la votación de la comunidad, puesto 8 con 79,8 puntos">
+          <span class="float-bob"><img data-src="img/smart-vertical/votacion.png" data-full="img/smart-vertical/votacion.png" alt="Resultado de la votación de la comunidad: Smart Vertical Garden en el puesto 8 con 79,8 puntos" width="1063" height="407" decoding="async"></span>
         </button>
     </div>
   </div>
