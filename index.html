@@ -418,6 +418,87 @@
   }
   a.contact-link:hover{ border-color: var(--red); }
 
+  /* =====================================================================
+     HABILIDADES — nivel según trabajo demostrado. Cada herramienta lleva
+     un medidor de 3 tramos (básico / intermedio / avanzado) y el proyecto
+     o la formación que lo respalda.
+     ===================================================================== */
+  .skill-legend{
+    display:flex; flex-wrap:wrap; gap: 8px 22px;
+    margin: 0 0 26px;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+  }
+  .legend-item{ display:flex; align-items:center; gap: 8px; }
+  .skill-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  .skill-group{
+    border: 1px solid var(--red-deep);
+    background: var(--ink-panel);
+    padding: 20px;
+  }
+  .skill-group h3{
+    font-family:'Shippori Mincho', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--paper);
+    margin: 0 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--red-deep);
+  }
+  .skill{ margin: 0 0 18px; }
+  .skill:last-child{ margin-bottom: 0; }
+  .skill-head{
+    display:flex; flex-direction: column; align-items:flex-start;
+    gap: 5px;
+  }
+  .skill-name{ font-weight: 700; font-size: 0.95rem; color: var(--paper); }
+  .skill-level{
+    display:flex; align-items:center; gap: 8px;
+    font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  /* Medidor: tres tajos diagonales, mismo lenguaje que las etiquetas. */
+  .meter{ display:inline-flex; gap: 3px; }
+  .meter i{
+    display:block; width: 16px; height: 8px;
+    background: rgba(200,30,42,0.18);
+    clip-path: polygon(25% 0, 100% 0, 75% 100%, 0 100%);
+  }
+  .meter[data-level="1"] i:nth-child(-n+1),
+  .meter[data-level="2"] i:nth-child(-n+2),
+  .meter[data-level="3"] i:nth-child(-n+3){ background: var(--red); }
+  section.reveal .skill p{
+    font-size: 0.85rem; line-height: 1.6;
+    color: var(--text-dim);
+    margin: 6px 0 0; max-width: none;
+  }
+  .skill-proof{ display:block; margin-top: 4px; font-size: 0.75rem; color: var(--gold); }
+  .skill-proof a{ color: var(--paper); text-decoration: none; border-bottom: 1px solid var(--red-deep); }
+  .skill-proof a:hover{ color: var(--red); border-color: var(--red); }
+  #habilidades .stat-row{ margin-top: 30px; }
+  /* Los enlaces a proyectos no quedan escondidos bajo la barra fija. */
+  .project-card{ scroll-margin-top: calc(var(--nav-h) + 16px); }
+
+  /* Con 4 enlaces, en móvil el menú se compacta y deja libre la esquina
+     del logo; si aun así no cabe, se desliza de lado en vez de romperse. */
+  @media (max-width: 640px){
+    nav.top-nav{
+      gap: 0;
+      padding-left: 12px;
+      padding-right: calc(clamp(84px, 12vw, 170px) + 6px);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    nav.top-nav::-webkit-scrollbar{ display: none; }
+    nav.top-nav a{ padding: 8px 7px; font-size: 0.74rem; white-space: nowrap; flex-shrink: 0; }
+  }
+
   footer{ text-align:center; color: var(--text-dim); font-size: 0.78rem; padding: 40px 0 10px; }
 
   /* =====================================================================
@@ -491,6 +572,7 @@
 
 <nav class="top-nav" id="topNav">
   <a href="#sobre-mi" data-target="sobre-mi">Sobre mí</a>
+  <a href="#habilidades" data-target="habilidades">Habilidades</a>
   <a href="#proyectos" data-target="proyectos">Proyectos</a>
   <a href="#contacto" data-target="contacto">Contacto</a>
 </nav>
@@ -533,12 +615,128 @@
     </div>
   </section>
 
+  <section class="reveal" id="habilidades">
+    <h2>Habilidades</h2>
+    <p class="dim">Niveles basados en trabajo real: cada herramienta indica en qué proyecto o formación está respaldada.</p>
+
+    <div class="skill-legend" aria-hidden="true">
+      <span class="legend-item"><span class="meter" data-level="1"><i></i><i></i><i></i></span>Básico — lo uso con guía</span>
+      <span class="legend-item"><span class="meter" data-level="2"><i></i><i></i><i></i></span>Intermedio — trabajo de forma independiente</span>
+      <span class="legend-item"><span class="meter" data-level="3"><i></i><i></i><i></i></span>Avanzado — resuelvo proyectos complejos</span>
+    </div>
+
+    <div class="skill-grid">
+
+      <div class="skill-group">
+        <h3>3D y video</h3>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">Blender</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Modelado, simulación de tela, texturizado UV y render; exportación .glb optimizada para web.</p>
+          <span class="skill-proof">Aplicado en: <a href="#p-sofa">Stand SOFA 2026</a> · <a href="#p-fele">Camiseta 3D Fële</a></span>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">DaVinci Resolve</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Edición de videoclips y contenido musical.</p>
+          <span class="skill-proof">Aplicado en: videoclip «Pensando en ti»</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>Diseño, ilustración y animación 2D</h3>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">Affinity</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Vectorización, diseño textil y archivos listos para impresión DTF.</p>
+          <span class="skill-proof">Aplicado en: <a href="#p-nimbado">Diseño textil Nimbado</a></span>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">Krita</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Ilustración digital y diseño de personajes.</p>
+          <span class="skill-proof">Aplicado en: <a href="#sobre-mi">ilustraciones de «Sobre mí»</a> · portadas para Fële</span>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">OpenToonz</span>
+            <span class="skill-level"><span class="meter" data-level="1" role="img" aria-label="Nivel básico"><i></i><i></i><i></i></span>Básico</span>
+          </div>
+          <p>Animación 2D cuadro a cuadro.</p>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>Audio</h3>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">Ableton Live</span>
+            <span class="skill-level"><span class="meter" data-level="3" role="img" aria-label="Nivel avanzado"><i></i><i></i><i></i></span>Avanzado</span>
+          </div>
+          <p>Producción, composición, grabación, edición y mezcla.</p>
+          <span class="skill-proof">Aplicado en: proyecto musical Fële · canción «Pensando en ti»</span>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">Pro Tools</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Masterización de canciones.</p>
+          <span class="skill-proof">Formación: DNA Music, Bogotá</span>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">rekordbox · DDJ-400</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Mezcla DJ con controlador Pioneer DJ DDJ-400.</p>
+          <span class="skill-proof">Aplicado en: «Cumbia mix»</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>Producción en vivo</h3>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">Consolas en vivo</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Operación de consola, flujo de señal y rider técnico.</p>
+          <span class="skill-proof">Formación: DNA Music, Bogotá</span>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">Montaje y logística de eventos</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Montaje, desmontaje y transporte de equipos de audio e iluminación en conciertos masivos.</p>
+          <span class="skill-proof">Experiencia: M&amp;P Productions, Hamburgo (Barclays Arena, Sporthalle) · OKANA Group, Bogotá</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="stat-row">
+      <div><strong>Español</strong>Nativo</div>
+      <div><strong>Inglés</strong>B2</div>
+      <div><strong>Alemán</strong>A2 certificado (Goethe) · B1 funcional</div>
+    </div>
+  </section>
+
 <section class="reveal" id="proyectos">
     <h2>Proyectos</h2>
 
     <div class="project-grid">
 
-        <div class="project-card">
+        <div class="project-card" id="p-sofa">
 
             <div class="mv-frame">
                 <model-viewer
@@ -570,7 +768,7 @@
 
         </div>
 
-        <div class="project-card">
+        <div class="project-card" id="p-nimbado">
 
             <div class="thumb">Reemplaza este bloque por tus diseños textiles de Nimbado</div>
 
@@ -584,7 +782,7 @@
 
         </div>
 
-        <div class="project-card">
+        <div class="project-card" id="p-fele">
 
             <div class="mv-frame">
                 <model-viewer
@@ -687,7 +885,7 @@
   }, 1500);
 
   // Resalta el link del nav según la sección visible
-  const navObserver = new IntersectionObserver((entries) => {
+  function onNavIntersect(entries){
     entries.forEach(entry => {
       const link = document.querySelector('.top-nav a[data-target="' + entry.target.id + '"]');
       if (!link) return;
@@ -696,8 +894,14 @@
         link.classList.add('active');
       }
     });
-  }, { threshold: 0.5 });
+  }
+  const navObserver = new IntersectionObserver(onNavIntersect, { threshold: 0.5 });
   sections.forEach(s => navObserver.observe(s));
+  // Secciones más altas que la pantalla (Habilidades o Proyectos en móvil)
+  // nunca llegan a verse al 50%: esta segunda observación las marca cuando
+  // cruzan la franja central de la pantalla.
+  const navBandObserver = new IntersectionObserver(onNavIntersect, { rootMargin: '-45% 0px -50% 0px' });
+  sections.forEach(s => navBandObserver.observe(s));
 
   // Visores 3D: el .glb no se descarga hasta que el usuario toca
   // "Ver modelo 3D" — así el celular no gasta datos ni memoria de GPU
