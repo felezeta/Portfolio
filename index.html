@@ -650,22 +650,26 @@
   const torii = document.querySelector('.torii-bg');
   const kanji = document.querySelector('.kanji-bg');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // Caída de las ilustraciones de "Sobre mí", atada al scroll: el progreso
-  // va de 0 (la sección apenas asoma por abajo) a 1 (su borde superior
-  // llega al 25% de la pantalla). Gojo arranca un poco después que la sombrilla.
+  // Caída de las ilustraciones de "Sobre mí", atada al scroll. Cada imagen
+  // usa su propia posición en pantalla: el progreso va de 0 (su borde
+  // superior está en el 90% de la pantalla, recién asomando) a 1 (llega al
+  // 20%). Así la caída ocurre mientras la imagen es visible, y Gojo — que
+  // está más abajo en la sección — cae naturalmente después que la sombrilla.
   const aboutSection = document.getElementById('sobre-mi');
   const fallArts = [
-    { el: document.querySelector('.art-umbrella'), delay: 0 },
-    { el: document.querySelector('.art-gojo'),     delay: 0.15 }
+    document.querySelector('.art-umbrella'),
+    document.querySelector('.art-gojo')
   ];
   const clamp01 = v => Math.min(1, Math.max(0, v));
   function updateArtFall(){
     const vh = window.innerHeight;
-    const top = aboutSection.getBoundingClientRect().top;
-    const progress = clamp01((vh - top) / (vh * 0.75));
-    fallArts.forEach(({ el, delay }) => {
-      const p = clamp01((progress - delay) / (1 - delay));
-      const eased = 1 - Math.pow(1 - p, 3); // desacelera al llegar
+    const sectionTop = aboutSection.getBoundingClientRect().top;
+    fallArts.forEach(el => {
+      // offsetTop ignora el transform, así que medimos la posición final
+      // de la imagen, no la que tiene a mitad de la caída.
+      const top = sectionTop + el.offsetTop;
+      const p = clamp01((vh * 0.9 - top) / (vh * 0.7));
+      const eased = 1 - Math.pow(1 - p, 2); // desacelera al llegar
       // Igual que la animación original: aparece hasta opacidad 1 a mitad
       // de la caída y luego se asienta en 0.15 detrás del texto.
       const opacity = p < 0.65 ? p / 0.65 : 1 - 0.85 * ((p - 0.65) / 0.35);
