@@ -11,3 +11,7 @@ Thumbs.db
 
 # Temporary files
 *.tmp
+
+# Originales de trabajo (el sitio usa las versiones web de img/)
+/Ilustraciones/
+/Smart Vertical Anbau/
