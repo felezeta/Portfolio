@@ -553,8 +553,9 @@
   .collage-tiles{
     position: absolute; inset: 0;
     display: grid;
-    grid-template-columns: 1.6fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    /* minmax(0, …): una foto vertical no estira su fila más allá del recuadro. */
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
     gap: 4px;
   }
   .collage-tiles img{
@@ -905,15 +906,15 @@
 
         <div class="project-card is-featured" id="p-ilustraciones">
 
-            <button class="collage" type="button" aria-haspopup="dialog" aria-controls="galeriaIlustraciones" aria-label="Abrir galería: Ilustración y concept art (9 imágenes)">
+            <button class="collage" type="button" aria-haspopup="dialog" aria-controls="galeriaIlustraciones" aria-label="Abrir galería: Ilustración y concept art (10 imágenes)">
                 <span class="collage-tiles">
                     <img src="img/ilustraciones/casa-dragones-s.jpg" alt="" loading="lazy" decoding="async">
                     <img src="img/ilustraciones/ninja-arana-jefe-s.jpg" alt="" loading="lazy" decoding="async">
-                    <img src="img/ilustraciones/sketch-puente-torre-s.jpg" alt="" loading="lazy" decoding="async">
+                    <img src="img/ilustraciones/sketch-kunsthalle-s.jpg" alt="" loading="lazy" decoding="async" style="object-position: center 78%">
                 </span>
                 <span class="collage-cta">
                     <span class="collage-icon">⊞</span>
-                    <span class="collage-label">Ver galería · 9 imágenes</span>
+                    <span class="collage-label">Ver galería · 10 imágenes</span>
                 </span>
             </button>
 
@@ -1131,7 +1132,7 @@
 <div class="gallery" id="galeriaIlustraciones" role="dialog" aria-modal="true" aria-label="Galería: Ilustración y concept art" hidden>
   <div class="gallery-backdrop" data-close></div>
   <div class="gallery-head">
-    <span class="gallery-title">Ilustración y concept art<small>9 imágenes</small></span>
+    <span class="gallery-title">Ilustración y concept art<small>10 imágenes</small></span>
     <button class="gallery-close" type="button" data-close aria-label="Cerrar galería">✕</button>
   </div>
   <div class="gallery-stage">
@@ -1154,14 +1155,17 @@
         <button class="float-card" type="button" style="--r:4deg; --d:0.30s; --f:-4.5s; --ar:566 / 800" aria-label="Ver en grande: Sketchbook: iglesia y árbol, tinta azul">
           <span class="float-bob"><img data-src="img/ilustraciones/sketch-iglesia-s.jpg" data-full="img/ilustraciones/sketch-iglesia-l.jpg" alt="Sketchbook: iglesia y árbol, tinta azul" width="566" height="800" decoding="async"></span>
         </button>
-        <button class="float-card" type="button" style="--r:-3deg; --d:0.36s; --f:-5.4s; --ar:566 / 800" aria-label="Ver en grande: Sketchbook: puente y torre del reloj, tinta azul">
-          <span class="float-bob"><img data-src="img/ilustraciones/sketch-puente-torre-s.jpg" data-full="img/ilustraciones/sketch-puente-torre-l.jpg" alt="Sketchbook: puente y torre del reloj, tinta azul" width="566" height="800" decoding="async"></span>
+        <button class="float-card" type="button" style="--r:-3deg; --d:0.36s; --f:-5.4s; --ar:565 / 800" aria-label="Ver en grande: Sketchbook: Hamburger Kunsthalle, tinta azul">
+          <span class="float-bob"><img data-src="img/ilustraciones/sketch-kunsthalle-s.jpg" data-full="img/ilustraciones/sketch-kunsthalle-l.jpg" alt="Sketchbook: Hamburger Kunsthalle, tinta azul" width="565" height="800" decoding="async"></span>
         </button>
         <button class="float-card" type="button" style="--r:1deg; --d:0.42s; --f:-0.3s; --ar:566 / 800" aria-label="Ver en grande: Sketchbook: fachada histórica, tinta negra">
           <span class="float-bob"><img data-src="img/ilustraciones/sketch-fachada-s.jpg" data-full="img/ilustraciones/sketch-fachada-l.jpg" alt="Sketchbook: fachada histórica, tinta negra" width="566" height="800" decoding="async"></span>
         </button>
         <button class="float-card" type="button" style="--r:2deg; --d:0.48s; --f:-1.2s; --ar:566 / 800" aria-label="Ver en grande: Sketchbook: edificio bajo la nieve, tinta azul">
           <span class="float-bob"><img data-src="img/ilustraciones/sketch-invierno-s.jpg" data-full="img/ilustraciones/sketch-invierno-l.jpg" alt="Sketchbook: edificio bajo la nieve, tinta azul" width="566" height="800" decoding="async"></span>
+        </button>
+        <button class="float-card is-wide" type="button" style="--r:-2deg; --d:0.54s; --f:-2.1s; --ar:800 / 566" aria-label="Ver en grande: Sketchbook: fachada de iglesia con dos torres, tinta negra">
+          <span class="float-bob"><img data-src="img/ilustraciones/sketch-portico-s.jpg" data-full="img/ilustraciones/sketch-portico-l.jpg" alt="Sketchbook: fachada de iglesia con dos torres, tinta negra" width="800" height="566" decoding="async"></span>
         </button>
     </div>
   </div>
