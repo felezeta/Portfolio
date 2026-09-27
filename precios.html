@@ -272,6 +272,11 @@
     .price-table td.price{ grid-column: 2; grid-row: 1; font-size: 0.98rem; }
     .price-table td:not(.price){ grid-column: 1 / -1; }
   }
+  /* Ejemplo de cada nivel, enlazado a la pieza del portafolio. */
+  .example{ display: block; margin-top: 5px; font-size: 0.78rem; color: var(--gold); }
+  .example a{ color: var(--paper); text-decoration: none; border-bottom: 1px solid var(--red-deep); }
+  .example a:hover, .example a:focus-visible{ color: var(--red); border-color: var(--red); }
+
   p.note{
     margin: 14px 0 0;
     padding-left: 12px;
@@ -390,9 +395,9 @@
         <thead><tr><th scope="col">Servicio</th><th scope="col">Incluye</th><th scope="col">Precio (COP)</th></tr></thead>
         <tbody>
           <tr><th scope="row">Preparación de archivo</th><td>Limpieza de fondo, escalado y ajuste de color de un diseño que ya tienes</td><td class="price">15.000 – 25.000</td></tr>
-          <tr><th scope="row">Diseño sencillo</th><td>Un solo elemento: ícono, logo o texto con tipografía trabajada, de 1 a 3 colores</td><td class="price">60.000 – 100.000</td></tr>
-          <tr><th scope="row">Diseño mediano</th><td>Ilustración con varios elementos: personaje u objeto, con texto o un fondo sencillo</td><td class="price">120.000 – 200.000</td></tr>
-          <tr><th scope="row">Diseño complejo</th><td>Ilustración detallada, con muchas capas, sombras y texturas</td><td class="price">250.000 – 400.000</td></tr>
+          <tr><th scope="row">Diseño sencillo</th><td>Un solo elemento: ícono, logo o texto con tipografía trabajada, de 1 a 3 colores<span class="example">Ejemplo: <a href="index.html#p-fele">la silueta FÉLE de mi camiseta</a></span></td><td class="price">60.000 – 100.000</td></tr>
+          <tr><th scope="row">Diseño mediano</th><td>Ilustración con varios elementos: personaje u objeto, con texto o un fondo sencillo<span class="example">Ejemplo: <a href="index.html#p-nimbado">el logo de los buzos FÉLE</a></span></td><td class="price">120.000 – 200.000</td></tr>
+          <tr><th scope="row">Diseño complejo</th><td>Ilustración detallada, con muchas capas, sombras y texturas<span class="example">Ejemplo: <a href="index.html#p-ilustraciones">mis fan arts e ilustraciones del portafolio</a></span></td><td class="price">250.000 – 400.000</td></tr>
           <tr><th scope="row">Video 3D 360°</th><td>Tu prenda girando en 3D, para redes o web</td><td class="price">300.000 – 600.000</td></tr>
           <tr><th scope="row">Ajuste adicional</th><td>Cada cambio fuera de las 3 rondas incluidas</td><td class="price">10.000 – 20.000<small>por ajuste</small></td></tr>
         </tbody>
