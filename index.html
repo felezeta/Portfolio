@@ -213,6 +213,12 @@
     visibility: hidden;
   }
   .mode-option[aria-checked="true"] .mode-check{ visibility: visible; }
+  /* Debajo de los modos: enlace a la página de precios. */
+  .mode-menu-sub{ margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--red-deep); }
+  .mode-link .mode-arrow{ visibility: visible; font-size: 1rem; letter-spacing: 0; }
+  .mode-link:hover .mode-arrow,
+  .mode-link:focus-visible .mode-arrow{ transform: translateX(3px); }
+  .mode-arrow{ transition: transform 0.2s ease; }
 
   /* Transición al cambiar de modo: un tajo rojo cruza la pantalla con el
      kanji del modo nuevo, y el contenido cambia mientras la tapa. */
@@ -651,6 +657,14 @@
     border-bottom: 1px solid var(--red-deep);
   }
   .skill{ margin: 0 0 18px; }
+  .skill-group h3 small{
+    margin-left: 10px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 0.66rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--gold);
+    white-space: nowrap;
+  }
   .skill:last-child{ margin-bottom: 0; }
   .skill-head{
     display:flex; flex-direction: column; align-items:flex-start;
@@ -1077,7 +1091,7 @@
   <div class="loader-tip"><span data-only="diseno">Ilustración · diseño · 3D</span><span data-only="audio">Producción · mezcla · sonido en vivo</span></div>
 </div>
 
-<button class="mode-switch" id="modeSwitch" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="modeMenu" aria-label="Cambiar de portafolio: diseño o audio">
+<button class="mode-switch" id="modeSwitch" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="modeMenu" aria-label="Menú: portafolio de diseño o de audio, y precios">
   <span class="mode-rings" aria-hidden="true"><i></i><i></i><i></i></span>
   <img class="corner-logo" src="logo.png" alt="">
   <span class="mode-chip"><span data-only="diseno">Diseño</span><span data-only="audio">Audio</span><span class="mode-caret" aria-hidden="true">▾</span></span>
@@ -1094,6 +1108,12 @@
     <span class="mode-text"><strong>Audio</strong>Producción musical, DJ y sonido en vivo</span>
     <span class="mode-check">Actual</span>
   </button>
+  <p class="mode-menu-title mode-menu-sub">Servicios</p>
+  <a class="mode-option mode-link" role="menuitem" href="precios.html">
+    <span class="mode-glyph" aria-hidden="true">価</span>
+    <span class="mode-text"><strong>Precios</strong><span data-only="diseno">Diseño para merch y renders 3D</span><span data-only="audio">Mezcla, master y sonido en vivo</span></span>
+    <span class="mode-check mode-arrow" aria-hidden="true">→</span>
+  </a>
 </div>
 <div class="mode-wipe" id="modeWipe" aria-hidden="true"><span class="mode-wipe-glyph"></span></div>
 
@@ -1349,6 +1369,55 @@
             <span class="skill-level"><span class="meter" data-level="1" role="img" aria-label="Nivel básico"><i></i><i></i><i></i></span>Básico</span>
           </div>
           <p>Animación 2D cuadro a cuadro.</p>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>Adobe Creative Cloud<small>desde 2023</small></h3>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">Photoshop</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Retoque, composición y preparación de archivos para impresión DTF.</p>
+          <span class="skill-proof">Aplicado en: <a href="#p-nimbado">Diseño textil Nimbado</a></span>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">Illustrator</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Ilustración vectorial, logos y diseños para estampado.</p>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">InDesign</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Maquetación editorial: documentos, portafolios y piezas impresas.</p>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">After Effects</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Motion graphics y efectos para video.</p>
+          <span class="skill-proof">Aplicado en: <a href="?modo=audio#a-pensando">videoclip «Pensando en ti»</a></span>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">Premiere Pro</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Edición de video y videoclips.</p>
+          <span class="skill-proof">Aplicado en: <a href="?modo=audio#a-pensando">videoclip «Pensando en ti»</a></span>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span class="skill-name">Media Encoder</span>
+            <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
+          </div>
+          <p>Exportación y codificación de video para redes y web.</p>
         </div>
       </div>
 
@@ -1923,12 +1992,16 @@
     const menu = document.getElementById('modeMenu');
     const wipe = document.getElementById('modeWipe');
     const options = Array.from(menu.querySelectorAll('[data-set-mode]'));
+    // El enlace a precios abre la parte del modo en el que está la persona.
+    const links = Array.from(menu.querySelectorAll('.mode-link'));
+    const items = options.concat(links);
     const GLYPH = { diseno: '影', audio: '音' };
     const TITLE = { diseno: 'Santiago Flórez Trujillo', audio: 'Santiago Flórez Trujillo — Audio' };
     let busy = false;
 
     function syncMenu(){
       options.forEach(o => o.setAttribute('aria-checked', String(o.dataset.setMode === root.dataset.mode)));
+      links.forEach(a => a.setAttribute('href', 'precios.html' + (root.dataset.mode === 'audio' ? '?modo=audio' : '')));
       document.title = TITLE[root.dataset.mode];
     }
 
@@ -1990,11 +2063,11 @@
       if (!menu.hidden && !menu.contains(e.target) && !toggle.contains(e.target)) closeMenu(false);
     });
     menu.addEventListener('keydown', e => {
-      const i = options.indexOf(document.activeElement);
+      const i = items.indexOf(document.activeElement);
       if (e.key === 'Escape') { e.preventDefault(); closeMenu(true); }
       else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
         e.preventDefault();
-        options[(i + (e.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length].focus();
+        items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length].focus();
       }
     });
   })();
