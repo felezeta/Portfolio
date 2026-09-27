@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Precios — Santiago Flórez Trujillo</title>
+<meta name="description" content="Precios de referencia 2026 en Bogotá: diseño para merch, renders 3D, mezcla, masterización y sonido en vivo.">
+<script>
+  // Mismo modo que el portafolio (diseño / audio): ?modo=audio abre los
+  // precios de audio. Se decide antes de pintar para que no parpadee.
+  (function(){
+    var m = null;
+    try { m = new URLSearchParams(location.search).get('modo'); } catch (e) {}
+    document.documentElement.setAttribute('data-mode', m === 'audio' ? 'audio' : 'diseno');
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  /* Misma paleta y tipografías que index.html: si cambias allá un color,
+     cámbialo también aquí. */
+  :root{
+    --ink:        #0c0a0a;
+    --ink-panel:  #17110f;
+    --paper:      #eee6d3;
+    --red:        #c81e2a;
+    --red-deep:   #7d0f18;
+    --gold:       #a8843f;
+    --text-dim:   #9c8f82;
+    --nav-h: 54px;
+    --frame-pad: clamp(20px, 4vw, 56px);
+  }
+  * { box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    overflow-x: hidden;
+  }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior: auto; } }
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:60; pointer-events:none;
+    background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 3px 3px;
+    opacity: 0.5;
+  }
+
+  /* Cada bloque se muestra solo en su modo. */
+  html[data-mode="diseno"] [data-only="audio"],
+  html[data-mode="audio"] [data-only="diseno"]{ display: none !important; }
+
+  .torii-bg{
+    position: fixed; right: -60px; bottom: -40px;
+    width: min(60vw, 520px);
+    opacity: 0.06;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .kanji-bg{
+    position: fixed; left: -3vw; top: 40%;
+    font-family:'Shippori Mincho', serif;
+    font-size: clamp(6rem, 22vw, 16rem);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(200,30,42,0.14);
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* El logo vuelve al portafolio (en index.html es el cambio de modo). */
+  .corner-home{
+    position: fixed; top: 0; right: 0;
+    width: clamp(84px, 12vw, 170px);
+    z-index: 55;
+  }
+  .corner-logo{
+    display: block; width: 100%; height: auto;
+    filter: drop-shadow(0 2px 10px rgba(0,0,0,0.55));
+    transition: transform 0.35s cubic-bezier(.2,.9,.3,1.2), filter 0.35s ease;
+  }
+  .corner-home:hover .corner-logo,
+  .corner-home:focus-visible .corner-logo{
+    transform: rotate(-8deg) scale(1.05);
+    filter: drop-shadow(0 0 16px rgba(200,30,42,0.8));
+  }
+
+  nav.top-nav{
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    display:flex; gap: 4px;
+    background: rgba(12,10,10,0.85);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--red-deep);
+    padding: 10px clamp(20px,4vw,56px);
+  }
+  nav.top-nav a{
+    text-decoration:none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    color: var(--text-dim);
+    padding: 8px 14px;
+    clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%);
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+  nav.top-nav a:hover{ color: var(--paper); }
+  /* La pestaña del modo actual queda marcada en rojo. */
+  html[data-mode="diseno"] nav.top-nav a[data-set-mode="diseno"],
+  html[data-mode="audio"] nav.top-nav a[data-set-mode="audio"]{ color: var(--ink); background: var(--red); }
+  nav.top-nav .nav-sep{ flex: 0 0 1px; margin: 6px 6px; background: var(--red-deep); }
+  @media (max-width: 640px){
+    nav.top-nav{
+      gap: 0;
+      padding-left: 12px;
+      padding-right: calc(clamp(84px, 12vw, 170px) + 6px);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    nav.top-nav::-webkit-scrollbar{ display: none; }
+    nav.top-nav a{ padding: 8px 7px; font-size: 0.74rem; white-space: nowrap; flex-shrink: 0; }
+    nav.top-nav .nav-sep{ margin: 6px 4px; }
+  }
+
+  .frame{
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: var(--frame-pad);
+    padding-top: calc(var(--nav-h) + var(--frame-pad));
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Encabezado de la página. */
+  .page-head{
+    position: relative;
+    padding: clamp(40px, 8vw, 90px) 0 clamp(28px, 5vw, 48px);
+    border-bottom: 2px solid var(--red-deep);
+  }
+  .slash-bar{
+    position: absolute;
+    left: -6vw; top: 22%;
+    width: 46vw; height: 40px;
+    background: var(--red);
+    clip-path: polygon(0 0, 100% 30%, 96% 100%, 0% 65%);
+    z-index: -1;
+    opacity: 0.9;
+  }
+  .eyebrow-mark{
+    display:flex; align-items:center; gap: 10px;
+    font-size: 0.78rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .hanko{ width: 30px; height: 30px; flex-shrink: 0; }
+  h1.name{
+    font-family:'Shippori Mincho', serif;
+    font-weight: 800;
+    font-size: clamp(2.4rem, 7vw, 4.2rem);
+    margin: 0 0 8px;
+    line-height: 1.05;
+    text-shadow: 3px 3px 0 var(--red-deep);
+  }
+  p.tagline{
+    color: var(--paper);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    margin: 0 0 14px;
+  }
+  p.lead{
+    color: var(--text-dim);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  /* Bloques de precios. */
+  section.price-block{ padding: clamp(40px, 7vw, 72px) 0 0; }
+  section h2{
+    font-family:'Shippori Mincho', serif;
+    font-weight:700;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--red);
+    margin: 0 0 10px;
+    border-left: 4px solid var(--red);
+    padding-left: 14px;
+  }
+  p.section-lead{
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin: 0 0 22px;
+    max-width: 62ch;
+  }
+  .price-panel{
+    border: 1px solid var(--red-deep);
+    background: var(--ink-panel);
+    padding: 6px 20px 10px;
+  }
+  .price-table{ width: 100%; border-collapse: collapse; }
+  .price-table caption{
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  .price-table thead th{
+    text-align: left;
+    font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 14px 12px 10px;
+    border-bottom: 2px solid var(--red);
+  }
+  .price-table thead th:last-child{ text-align: right; }
+  .price-table tbody tr{
+    border-bottom: 1px solid rgba(125,15,24,0.6);
+    transition: background 0.2s ease;
+  }
+  .price-table tbody tr:last-child{ border-bottom: none; }
+  @media (hover: hover){
+    .price-table tbody tr:hover{ background: rgba(200,30,42,0.07); }
+  }
+  .price-table tbody th{
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--paper);
+    padding: 16px 12px;
+    vertical-align: top;
+  }
+  .price-table td{
+    padding: 16px 12px;
+    color: var(--text-dim);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    vertical-align: top;
+  }
+  .price-table td.price{
+    text-align: right;
+    white-space: nowrap;
+    font-family:'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .price-table td.price small{
+    display: block;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 0.7rem; font-weight: 500;
+    color: var(--text-dim);
+  }
+  /* En el celular cada fila es una tarjeta: servicio y precio arriba,
+     lo que incluye debajo. Sin scroll horizontal. */
+  @media (max-width: 640px){
+    .price-panel{ padding: 4px 16px; }
+    .price-table thead{
+      position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap;
+    }
+    .price-table, .price-table tbody{ display: block; }
+    .price-table tbody tr{
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4px 14px;
+      padding: 14px 0;
+    }
+    .price-table tbody th,
+    .price-table td{ padding: 0; }
+    .price-table td.price{ grid-column: 2; grid-row: 1; font-size: 0.98rem; }
+    .price-table td:not(.price){ grid-column: 1 / -1; }
+  }
+  p.note{
+    margin: 14px 0 0;
+    padding-left: 12px;
+    border-left: 3px solid var(--gold);
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  p.note strong{ color: var(--paper); }
+
+  /* Condiciones. */
+  .terms{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 14px;
+    margin: 0; padding: 0;
+    list-style: none;
+  }
+  .terms li{
+    border: 1px solid var(--red-deep);
+    border-left: 3px solid var(--red);
+    background: var(--ink-panel);
+    padding: 14px 16px;
+    font-size: 0.86rem;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+  .terms li strong{ display: block; color: var(--paper); font-size: 0.92rem; margin-bottom: 2px; }
+
+  /* Llamado a cotizar. */
+  section.cta{
+    margin-top: clamp(48px, 8vw, 84px);
+    padding: clamp(28px, 5vw, 44px);
+    border: 1px solid var(--red);
+    background: linear-gradient(135deg, rgba(200,30,42,0.12), rgba(23,17,15,0.9) 60%);
+    scroll-margin-top: calc(var(--nav-h) + 20px);
+  }
+  section.cta p{ color: var(--text-dim); line-height: 1.7; margin: 0 0 20px; max-width: 58ch; }
+  .cta-actions{ display: flex; flex-wrap: wrap; gap: 12px; }
+  a.btn{
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 26px 12px 20px;
+    font-weight: 900; font-size: 0.86rem;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    text-decoration: none;
+    clip-path: polygon(0 0, 100% 0, 92% 100%, 0% 100%);
+    transition: background 0.2s ease, color 0.2s ease, filter 0.3s ease;
+  }
+  a.btn-primary{ background: var(--red); color: var(--ink); }
+  a.btn-primary:hover, a.btn-primary:focus-visible{ background: var(--paper); filter: drop-shadow(0 0 14px rgba(200,30,42,0.7)); }
+  /* El correo va en minúsculas y puede partirse, para que quepa en el celular. */
+  a.btn-ghost{
+    background: transparent; color: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--red-deep);
+    text-transform: none; letter-spacing: 0; font-weight: 700;
+    max-width: 100%; overflow-wrap: anywhere;
+  }
+  a.btn-ghost:hover, a.btn-ghost:focus-visible{ color: var(--red); box-shadow: inset 0 0 0 1px var(--red); }
+
+  footer{ text-align:center; color: var(--text-dim); font-size: 0.78rem; padding: 48px 0 10px; }
+  a:focus-visible{ outline: 2px solid var(--red); outline-offset: 3px; }
+
+  /* Entrada suave al cargar. */
+  @media (prefers-reduced-motion: no-preference){
+    .page-head, section.price-block, section.terms-block, section.cta{
+      animation: riseIn 0.7s cubic-bezier(.2,.9,.3,1) both;
+    }
+    section.price-block{ animation-delay: 0.08s; }
+    @keyframes riseIn{ from{ opacity: 0; transform: translateY(14px); } to{ opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+
+<a class="corner-home" href="index.html" aria-label="Volver al portafolio"><img class="corner-logo" src="logo.png" alt=""></a>
+
+<nav class="top-nav" aria-label="Precios">
+  <a href="index.html" id="backLink">← Portafolio</a>
+  <span class="nav-sep" aria-hidden="true"></span>
+  <a href="precios.html" data-set-mode="diseno">Diseño</a>
+  <a href="precios.html?modo=audio" data-set-mode="audio">Audio</a>
+  <a href="#cotizar">Cotizar</a>
+</nav>
+
+<svg class="torii-bg" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <rect x="10" y="30" width="180" height="14" fill="#c81e2a"/>
+  <rect x="0" y="50" width="200" height="10" fill="#c81e2a"/>
+  <rect x="35" y="44" width="14" height="110" fill="#c81e2a"/>
+  <rect x="151" y="44" width="14" height="110" fill="#c81e2a"/>
+  <rect x="90" y="60" width="20" height="94" fill="#c81e2a"/>
+</svg>
+<span class="kanji-bg" aria-hidden="true"><span data-only="diseno">影</span><span data-only="audio">音</span></span>
+
+<div class="frame">
+
+  <header class="page-head">
+    <div class="slash-bar"></div>
+    <div class="eyebrow-mark">
+      <svg class="hanko" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="#c81e2a" stroke-width="3"/><text x="20" y="26" text-anchor="middle" font-size="12" fill="#c81e2a" font-family="serif">FÉLE</text></svg>
+      Tarifas 2026
+    </div>
+    <h1 class="name">Precios</h1>
+    <p class="tagline" data-only="diseno">Diseño para merch y renders 3D.</p>
+    <p class="tagline" data-only="audio">Mezcla, masterización y sonido en vivo.</p>
+    <p class="lead">Precios de referencia en pesos colombianos (COP). El valor final se confirma con una cotización según el alcance de tu proyecto.</p>
+  </header>
+
+  <!-- ============================ DISEÑO ============================ -->
+
+  <section class="price-block" id="merch" data-only="diseno">
+    <h2>Diseño para merch</h2>
+    <p class="section-lead">Diseños para camisetas, buzos y productos, con 3 rondas de ajustes incluidas y el archivo listo para imprimir.</p>
+    <div class="price-panel">
+      <table class="price-table">
+        <caption>Precios de diseño para merch</caption>
+        <thead><tr><th scope="col">Servicio</th><th scope="col">Incluye</th><th scope="col">Precio (COP)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Preparación de archivo</th><td>Limpieza de fondo, escalado y ajuste de color de un diseño que ya tienes</td><td class="price">15.000 – 25.000</td></tr>
+          <tr><th scope="row">Diseño sencillo</th><td>Un solo elemento: ícono, logo o texto con tipografía trabajada, de 1 a 3 colores</td><td class="price">60.000 – 100.000</td></tr>
+          <tr><th scope="row">Diseño mediano</th><td>Ilustración con varios elementos: personaje u objeto, con texto o un fondo sencillo</td><td class="price">120.000 – 200.000</td></tr>
+          <tr><th scope="row">Diseño complejo</th><td>Ilustración detallada, con muchas capas, sombras y texturas</td><td class="price">250.000 – 400.000</td></tr>
+          <tr><th scope="row">Video 3D 360°</th><td>Tu prenda girando en 3D, para redes o web</td><td class="price">300.000 – 600.000</td></tr>
+          <tr><th scope="row">Ajuste adicional</th><td>Cada cambio fuera de las 3 rondas incluidas</td><td class="price">10.000 – 20.000<small>por ajuste</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note"><strong>10% de descuento</strong> en pedidos de 5 o más diseños en un mismo lote.</p>
+  </section>
+
+  <section class="price-block" id="renders" data-only="diseno">
+    <h2>Renders 3D</h2>
+    <p class="section-lead">Visualización en Blender de stands, estructuras y producto, para presentar o vender antes de fabricar.</p>
+    <div class="price-panel">
+      <table class="price-table">
+        <caption>Precios de renders 3D</caption>
+        <thead><tr><th scope="col">Servicio</th><th scope="col">Incluye</th><th scope="col">Precio (COP)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Render de producto</th><td>Carpa, exhibidor o estantería; precio por imagen en pedidos de 3 o más</td><td class="price">150.000 – 220.000<small>por imagen</small></td></tr>
+          <tr><th scope="row">Stand pequeño</th><td>2 vistas del stand con tu marca aplicada</td><td class="price">280.000 – 350.000</td></tr>
+          <tr><th scope="row">Stand mediano</th><td>3 vistas y planta con medidas</td><td class="price">500.000 – 650.000</td></tr>
+          <tr><th scope="row">Cambios extra</th><td>Fuera de las 2 rondas incluidas</td><td class="price">50.000<small>por hora</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================ AUDIO ============================= -->
+
+  <section class="price-block" id="estudio" data-only="audio">
+    <h2>Estudio</h2>
+    <p class="section-lead">Mezcla en Ableton Live y masterización en Pro Tools, con 2 rondas de ajustes incluidas.</p>
+    <div class="price-panel">
+      <table class="price-table">
+        <caption>Precios de mezcla y masterización</caption>
+        <thead><tr><th scope="col">Servicio</th><th scope="col">Incluye</th><th scope="col">Precio (COP)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Mezcla</th><td>Por canción, en Ableton Live</td><td class="price">250.000 – 400.000</td></tr>
+          <tr><th scope="row">Masterización</th><td>Por canción, en Pro Tools</td><td class="price">100.000 – 150.000</td></tr>
+          <tr><th scope="row">Mezcla + master</th><td>La canción completa, lista para publicar</td><td class="price">330.000 – 500.000</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="price-block" id="en-vivo" data-only="audio">
+    <h2>En vivo y logística</h2>
+    <p class="section-lead">Para eventos, conciertos y ferias en Bogotá. Experiencia en montaje y logística de conciertos en recintos como Barclays Arena (Hamburgo).</p>
+    <div class="price-panel">
+      <table class="price-table">
+        <caption>Precios de sonido en vivo y logística</caption>
+        <thead><tr><th scope="col">Servicio</th><th scope="col">Incluye</th><th scope="col">Precio (COP)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Auxiliar técnico y logística</th><td>Carga, montaje y desmontaje de equipos de audio e iluminación</td><td class="price">120.000 – 180.000<small>por jornada</small></td></tr>
+          <tr><th scope="row">Técnico de sonido</th><td>Montaje, conexión y operación del sistema de sonido</td><td class="price">250.000 – 425.000<small>por jornada</small></td></tr>
+          <tr><th scope="row">Mezcla en vivo</th><td>Operación de consola para una banda o artista: prueba de sonido y show</td><td class="price">350.000 – 500.000<small>por show</small></td></tr>
+          <tr><th scope="row">Hora extra</th><td>Después de las 10 horas de jornada</td><td class="price">30.000 – 40.000<small>por hora</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========================== CONDICIONES ========================= -->
+
+  <section class="price-block terms-block" id="condiciones">
+    <h2>Cómo trabajo</h2>
+    <ul class="terms" data-only="diseno">
+      <li><strong>Anticipo</strong>50% para empezar y 50% al entregar.</li>
+      <li><strong>Rondas de ajustes</strong>3 incluidas en diseño para merch y 2 en renders 3D.</li>
+      <li><strong>Entrega</strong>PNG en alta resolución, listo para DTF o sublimación.</li>
+      <li><strong>Derechos</strong>Incluye el uso del diseño en tus productos. La cesión total de derechos se cotiza aparte.</li>
+    </ul>
+    <ul class="terms" data-only="audio">
+      <li><strong>Anticipo</strong>Mezcla y master: 50% para empezar y 50% al entregar.</li>
+      <li><strong>Jornada</strong>Hasta 10 horas; después se cobra hora extra.</li>
+      <li><strong>Fuera de Bogotá</strong>Transporte, alimentación y hospedaje a cargo del cliente.</li>
+      <li><strong>Eventos nocturnos</strong>El transporte de regreso corre por cuenta del cliente.</li>
+    </ul>
+  </section>
+
+  <!-- ============================ COTIZAR =========================== -->
+
+  <section class="cta" id="cotizar">
+    <h2>Pide tu cotización</h2>
+    <p>Cuéntame qué necesitas, para cuándo y, si ya tienes, envíame referencias. Te respondo con el precio exacto.</p>
+    <div class="cta-actions">
+      <a class="btn btn-primary" id="waLink" href="https://wa.me/573203048709?text=Hola%20Santiago%2C%20quiero%20una%20cotizaci%C3%B3n" target="_blank" rel="noopener">WhatsApp <span aria-hidden="true">↗</span></a>
+      <a class="btn btn-ghost" id="mailLink" href="mailto:santiago.floreztrujillo@gmail.com?subject=Cotizaci%C3%B3n">santiago.floreztrujillo@gmail.com</a>
+    </div>
+  </section>
+
+  <footer>Precios de referencia · actualizados en septiembre de 2026 · Santiago Flórez Trujillo</footer>
+</div>
+
+<script>
+  // Pestañas Diseño / Audio: cambian de modo sin recargar, dejan el modo
+  // en la dirección (para compartir el enlace) y hacen que "← Portafolio"
+  // vuelva al mismo modo del portafolio.
+  (function(){
+    const root = document.documentElement;
+    const back = document.getElementById('backLink');
+    const home = document.querySelector('.corner-home');
+    function apply(mode){
+      root.dataset.mode = mode;
+      const q = mode === 'audio' ? '?modo=audio' : '';
+      back.href = 'index.html' + q;
+      home.href = 'index.html' + q;
+      document.querySelectorAll('[data-set-mode]').forEach(a => {
+        if (a.dataset.setMode === mode) a.setAttribute('aria-current', 'page');
+        else a.removeAttribute('aria-current');
+      });
+      try {
+        const url = new URL(location.href);
+        if (mode === 'audio') url.searchParams.set('modo', 'audio'); else url.searchParams.delete('modo');
+        history.replaceState(null, '', url);
+      } catch (e) {}
+    }
+    document.querySelectorAll('[data-set-mode]').forEach(a => a.addEventListener('click', e => {
+      e.preventDefault();
+      apply(a.dataset.setMode);
+      window.scrollTo(0, 0);
+    }));
+    apply(root.dataset.mode);
+  })();
+</script>
+</body>
+</html>
