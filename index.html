@@ -473,6 +473,10 @@
     .project-grid{ grid-template-columns: repeat(3, 1fr); }
     .project-card.is-featured{ grid-column: span 2; }
   }
+  /* Música: el mix de hip hop va justo debajo del de cumbia (también en el
+     código, para el celular); "dense" sube «Pensando en ti» al hueco de la
+     derecha del primer mix en vez de dejarlo vacío. */
+  .music-grid{ grid-auto-flow: row dense; }
   section.reveal p.section-lead{ margin: -8px 0 24px; font-size: 0.9rem; }
   /* Categoría del proyecto, encima del título. */
   .project-card .kicker{
@@ -1434,7 +1438,7 @@
     <h2>Música</h2>
     <p class="dim section-lead">Producciones de Féle, mi proyecto musical. Toca un video para reproducirlo aquí mismo.</p>
 
-    <div class="project-grid">
+    <div class="project-grid music-grid">
 
         <div class="project-card is-featured" id="a-cumbia">
 
@@ -1455,6 +1459,28 @@
 
             <span class="tag">rekordbox · DDJ-400</span>
             <a class="mv-download" href="https://www.youtube.com/watch?v=1KUoncJbVCc" target="_blank" rel="noopener">Ver en YouTube ↗</a>
+
+        </div>
+
+        <div class="project-card is-featured" id="a-hiphop">
+
+            <div class="yt-frame">
+                <button class="mv-poster-btn" type="button" data-yt="puefHDaPq14" data-title="Mi Mix de Hip Hop '08 — Féle" aria-label="Reproducir video: Mi Mix de Hip Hop '08 — Féle">
+                    <img class="mv-poster-img" src="img/audio/hip-hop-mix.jpg" alt="" loading="lazy" decoding="async">
+                    <span class="mv-icon">▶</span>
+                    <span class="mv-label">Reproducir mix</span>
+                </button>
+            </div>
+
+            <span class="kicker">Mezcla DJ</span>
+            <h3>Mi Mix de Hip Hop '08 — Féle</h3>
+
+            <p>
+                Mix de hip hop puro y sin filtro: beats y letras que van directo al grano, para quienes buscan música que realmente se sienta.
+            </p>
+
+            <span class="tag">Hip hop · Rap</span>
+            <a class="mv-download" href="https://www.youtube.com/watch?v=puefHDaPq14" target="_blank" rel="noopener">Ver en YouTube ↗</a>
 
         </div>
 
