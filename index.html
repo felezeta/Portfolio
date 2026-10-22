@@ -309,6 +309,18 @@
     margin: 0;
     font-weight: 400;
   }
+  /* Credencial destacada del inicio en la parte de audio. */
+  p.hero-tour{
+    margin: 16px 0 0;
+    text-wrap: balance;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.7;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  p.hero-tour strong{ color: var(--paper); white-space: nowrap; }
   /* Botón principal del inicio: lleva directo a los proyectos. */
   a.hero-cta{
     align-self: flex-start;
@@ -1028,6 +1040,110 @@
   }
   .channel-link{ margin: 26px 0 0; }
 
+  /* =====================================================================
+     CONCIERTOS — pases de trabajo en 3D, sin recuadro ni fondo: el modelo
+     flota sobre la página y se gira arrastrándolo. Pesan ~220 KB, así que
+     cargan solos al acercarse (sin botón); el póster es la misma vista del
+     modelo, para que no salte al aparecer. El balanceo lo hace el <script>.
+     ===================================================================== */
+  .pass-row{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(16px, 3vw, 40px);
+    max-width: 1100px;
+    margin: 10px auto 0;
+  }
+  .pass{ margin: 0; }
+  .pass-stage{ position: relative; z-index: 0; }
+  .pass-3d{
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    --poster-color: transparent;
+    --progress-bar-height: 0px;
+    touch-action: pan-y;
+    animation: passFloat 6s ease-in-out var(--f, 0s) infinite;
+  }
+  /* Luz de escenario bajo cada pase: crece cuando el pase baja. */
+  .pass-stage::after{
+    content: "";
+    position: absolute;
+    left: 24%; right: 24%; bottom: 3%;
+    height: 6%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(200,30,42,0.5), transparent);
+    filter: blur(4px);
+    z-index: -1;
+    pointer-events: none;
+    animation: passGlow 6s ease-in-out var(--f, 0s) infinite;
+  }
+  @keyframes passFloat{ 0%,100%{ transform: translateY(-8px); } 50%{ transform: translateY(6px); } }
+  @keyframes passGlow{ 0%,100%{ transform: scaleX(0.8); opacity: 0.5; } 50%{ transform: scaleX(1); opacity: 1; } }
+  @media (hover: hover){
+    .pass-3d{ transition: filter 0.35s ease; }
+    .pass:hover .pass-3d{ filter: drop-shadow(0 0 14px rgba(200,30,42,0.6)); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .pass-3d, .pass-stage::after{ animation: none; }
+  }
+  .pass-info{ text-align: center; margin-top: 4px; }
+  .pass-num{
+    display: block;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 800;
+    font-size: 1.9rem;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--red);
+  }
+  .pass-artist{
+    display: block;
+    margin-top: 6px;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 800;
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    line-height: 1.15;
+    color: var(--paper);
+  }
+  .pass-tour{ display: block; margin-top: 4px; font-size: 0.85rem; color: var(--text-dim); text-wrap: balance; }
+  .pass-venue{
+    display: block;
+    margin-top: 10px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-wrap: balance;
+  }
+  .pass-role{
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--red);
+    padding: 3px 12px 3px 10px;
+    clip-path: polygon(0 0, 100% 0, 92% 100%, 0% 100%);
+  }
+  section.reveal p.pass-legend{ margin: 30px auto 0; font-size: 0.78rem; text-align: center; }
+  /* En el celular: un pase por fila, en zigzag con su texto al lado. */
+  @media (max-width: 640px){
+    .pass-row{ grid-template-columns: 1fr; gap: 4px; }
+    .pass{
+      display: grid;
+      grid-template-columns: minmax(0, 11fr) minmax(0, 10fr);
+      grid-template-areas: "stage info";
+      align-items: center;
+      column-gap: 12px;
+    }
+    .pass-stage{ grid-area: stage; }
+    .pass-info{ grid-area: info; text-align: left; margin-top: 0; }
+    .pass:nth-child(even){ grid-template-columns: minmax(0, 10fr) minmax(0, 11fr); grid-template-areas: "info stage"; }
+    .pass:nth-child(even) .pass-info{ text-align: right; }
+  }
+
   footer{ text-align:center; color: var(--text-dim); font-size: 0.78rem; padding: 40px 0 10px; }
 
   /* =====================================================================
@@ -1127,6 +1243,7 @@
   <a href="#proyectos" data-target="proyectos" data-only="diseno">Proyectos</a>
   <a href="#sobre-mi" data-target="sobre-mi" data-only="diseno">Sobre mí</a>
   <a href="#habilidades" data-target="habilidades" data-only="diseno">Habilidades</a>
+  <a href="#conciertos" data-target="conciertos" data-only="audio">Conciertos</a>
   <a href="#musica" data-target="musica" data-only="audio">Música</a>
   <a href="#sobre-mi-audio" data-target="sobre-mi-audio" data-only="audio">Sobre mí</a>
   <a href="#habilidades-audio" data-target="habilidades-audio" data-only="audio">Habilidades</a>
@@ -1155,8 +1272,9 @@
     <h1 class="name">Santiago Flórez Trujillo</h1>
     <p class="tagline" data-only="diseno">Ilustrador y diseñador.<br>Ilustración, diseño textil, diseño de producto y 3D.</p>
     <p class="tagline" data-only="audio">Productor y técnico de audio.<br>Producción musical, mezcla, DJ y sonido en vivo.</p>
+    <p class="hero-tour" data-only="audio">Crew en giras de <strong>Linkin Park</strong>, <strong>Doja Cat</strong> y <strong>Charlie Puth</strong> · Hamburgo&nbsp;2026</p>
     <a class="hero-cta" href="#proyectos" data-only="diseno">Ver proyectos <span aria-hidden="true">↓</span></a>
-    <a class="hero-cta" href="#musica" data-only="audio">Escuchar <span aria-hidden="true">↓</span></a>
+    <a class="hero-cta" href="#conciertos" data-only="audio">Ver conciertos <span aria-hidden="true">↓</span></a>
     <div class="scroll-cue"><span></span>scroll</div>
   </header>
 
@@ -1436,6 +1554,98 @@
     </div>
   </section>
 
+  <section class="reveal" id="conciertos" data-only="audio">
+    <h2>Conciertos internacionales</h2>
+    <p class="dim section-lead">Trabajé en el crew local de tres giras mundiales, en los escenarios principales de Hamburgo. Estos son mis pases de trabajo en 3D: arrastra uno para girarlo.</p>
+
+    <div class="pass-row">
+
+        <figure class="pass" id="c-linkin" style="--f:0s">
+            <div class="pass-stage">
+                <model-viewer class="pass-3d"
+                    src="models/pase-linkin.glb"
+                    poster="img/audio/pase-linkin-poster.webp"
+                    loading="lazy"
+                    camera-controls
+                    touch-action="pan-y"
+                    disable-zoom
+                    disable-pan
+                    interaction-prompt="none"
+                    camera-orbit="-20deg 82deg 105%"
+                    min-camera-orbit="auto 55deg auto"
+                    max-camera-orbit="auto 110deg auto"
+                    shadow-intensity="0"
+                    alt="Modelo 3D del pase de trabajo de Linkin Park, From Zero World Tour 2026, cargo Site Crew">
+                </model-viewer>
+            </div>
+            <figcaption class="pass-info">
+                <span class="pass-num">01</span>
+                <strong class="pass-artist">Linkin Park</strong>
+                <span class="pass-tour">From Zero World Tour</span>
+                <span class="pass-venue">Volksparkstadion · Hamburgo · junio 2026</span>
+                <span class="pass-role">Site Crew</span>
+            </figcaption>
+        </figure>
+
+        <figure class="pass" id="c-doja" style="--f:-2s">
+            <div class="pass-stage">
+                <model-viewer class="pass-3d"
+                    src="models/pase-doja.glb"
+                    poster="img/audio/pase-doja-poster.webp"
+                    loading="lazy"
+                    camera-controls
+                    touch-action="pan-y"
+                    disable-zoom
+                    disable-pan
+                    interaction-prompt="none"
+                    camera-orbit="-20deg 82deg 105%"
+                    min-camera-orbit="auto 55deg auto"
+                    max-camera-orbit="auto 110deg auto"
+                    shadow-intensity="0"
+                    alt="Modelo 3D del pase de trabajo de Doja Cat, Tour Ma Vie World Tour, cargo Show Call">
+                </model-viewer>
+            </div>
+            <figcaption class="pass-info">
+                <span class="pass-num">02</span>
+                <strong class="pass-artist">Doja Cat</strong>
+                <span class="pass-tour">Tour Ma Vie World Tour</span>
+                <span class="pass-venue">Barclays Arena · Hamburgo · junio 2026</span>
+                <span class="pass-role">Show Call</span>
+            </figcaption>
+        </figure>
+
+        <figure class="pass" id="c-charlie" style="--f:-4s">
+            <div class="pass-stage">
+                <model-viewer class="pass-3d"
+                    src="models/pase-charlie.glb"
+                    poster="img/audio/pase-charlie-poster.webp"
+                    loading="lazy"
+                    camera-controls
+                    touch-action="pan-y"
+                    disable-zoom
+                    disable-pan
+                    interaction-prompt="none"
+                    camera-orbit="-20deg 82deg 105%"
+                    min-camera-orbit="auto 55deg auto"
+                    max-camera-orbit="auto 110deg auto"
+                    shadow-intensity="0"
+                    alt="Modelo 3D del pase de trabajo de Charlie Puth, Whatever's Clever! World Tour, cargo Site Crew">
+                </model-viewer>
+            </div>
+            <figcaption class="pass-info">
+                <span class="pass-num">03</span>
+                <strong class="pass-artist">Charlie Puth</strong>
+                <span class="pass-tour">Whatever's&nbsp;Clever! World Tour</span>
+                <span class="pass-venue">Stadtpark Open Air · Hamburgo · julio 2026</span>
+                <span class="pass-role">Site Crew</span>
+            </figcaption>
+        </figure>
+
+    </div>
+
+    <p class="dim pass-legend">Site Crew: montaje y desmontaje del recinto. Show Call: equipo de turno durante el concierto.</p>
+  </section>
+
   <section class="reveal" id="musica" data-only="audio">
     <h2>Música</h2>
     <p class="dim section-lead">Producciones de Féle, mi proyecto musical. Toca un video para reproducirlo aquí mismo; el mix de hip hop se abre en YouTube.</p>
@@ -1580,7 +1790,7 @@
             <span class="skill-level"><span class="meter" data-level="2" role="img" aria-label="Nivel intermedio"><i></i><i></i><i></i></span>Intermedio</span>
           </div>
           <p>Montaje, desmontaje y transporte de equipos de audio e iluminación en conciertos masivos.</p>
-          <span class="skill-proof">Experiencia: M&amp;P Productions, Hamburgo (Barclays Arena, Sporthalle) · OKANA Group, Bogotá</span>
+          <span class="skill-proof">Experiencia: <a href="#conciertos">giras de Linkin Park, Doja Cat y Charlie Puth</a> · M&amp;P Productions, Hamburgo (Barclays Arena, Sporthalle) · OKANA Group, Bogotá</span>
         </div>
       </div>
 
@@ -2013,6 +2223,57 @@
       btn.parentElement.appendChild(iframe);
     });
   });
+
+  // Pases de conciertos: modelos 3D sin recuadro. En vez de dar la vuelta
+  // completa (por detrás algunos son lisos) se balancean de lado a lado, así
+  // el cargo siempre se lee. Quien quiera los gira arrastrando: el pase se
+  // queda quieto mientras tanto y, unos segundos después de soltarlo,
+  // vuelve de frente y sigue balanceándose.
+  (function(){
+    const passes = Array.from(document.querySelectorAll('.pass-3d'));
+    if (!passes.length || reduceMotion) return;
+    // Igual que camera-orbit en el HTML (la vista del póster). El balanceo
+    // gira el modelo, no la cámara, para no pelear con el arrastre.
+    const HOME = { theta: -20, phi: 82 };
+    const AMP = 26;                               // grados hacia cada lado
+    const PHASE = Math.asin(-HOME.theta / AMP);   // arranca en 0°, como el póster
+    const swing = passes.map((mv, i) => ({ mv, t: 0, period: 8 + i * 1.3, ready: false, paused: false, idle: 0 }));
+    swing.forEach(s => {
+      s.mv.addEventListener('load', () => { s.ready = true; });
+      s.mv.addEventListener('camera-change', e => {
+        if (e.detail.source !== 'user-interaction') return;
+        s.paused = true;
+        s.mv.interpolationDecay = 50;
+        clearTimeout(s.idle);
+        s.idle = setTimeout(() => {
+          // Vuelve por el camino corto aunque lo hayan girado varias vueltas.
+          const theta = s.mv.getCameraOrbit().theta * 180 / Math.PI;
+          const home = HOME.theta + 360 * Math.round((theta - HOME.theta) / 360);
+          s.mv.interpolationDecay = 180;  // regreso suave
+          s.mv.cameraOrbit = home + 'deg ' + HOME.phi + 'deg 105%';
+          s.paused = false;
+        }, 3500);
+      });
+    });
+    let raf = 0, last = 0;
+    function tick(now){
+      const dt = Math.min(now - last, 50) / 1000;  // al volver de otra pestaña no salta
+      last = now;
+      swing.forEach(s => {
+        if (!s.ready || s.paused) return;
+        s.t += dt;
+        const yaw = HOME.theta + AMP * Math.sin(2 * Math.PI * s.t / s.period + PHASE);
+        s.mv.orientation = '0deg 0deg ' + yaw.toFixed(2) + 'deg';
+      });
+      raf = requestAnimationFrame(tick);
+    }
+    // Solo se anima mientras la sección está en pantalla (en modo diseño
+    // está oculta, así que tampoco corre).
+    new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
+      else if (!entry.isIntersecting && raf) { cancelAnimationFrame(raf); raf = 0; }
+    }).observe(document.getElementById('conciertos'));
+  })();
 
   // Interruptor de modo en el logo: diseño ⇄ audio.
   (function(){
