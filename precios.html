@@ -28,7 +28,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   /* Misma paleta y tipografías que index.html: si cambias allá un color,
      cámbialo también aquí. */
@@ -40,6 +40,8 @@
     --red-deep:   #7d0f18;
     --gold:       #a8843f;
     --text-dim:   #9c8f82;
+    --text-soft:  #c2b5a5;  /* textos secundarios que sí se leen (entradas, descripciones) */
+    --font-read:  'Manrope', 'Segoe UI', system-ui, sans-serif;
     --nav-h: 54px;
     --frame-pad: clamp(20px, 4vw, 56px);
   }
@@ -182,8 +184,8 @@
     margin: 0 0 14px;
   }
   p.lead{
-    color: var(--text-dim);
-    font-size: 0.92rem;
+    color: var(--text-soft);
+    font-size: 0.98rem;
     line-height: 1.7;
     max-width: 60ch;
     margin: 0;
@@ -201,8 +203,8 @@
     padding-left: 14px;
   }
   p.section-lead{
-    color: var(--text-dim);
-    font-size: 0.9rem;
+    color: var(--text-soft);
+    font-size: 1rem;
     line-height: 1.7;
     margin: 0 0 22px;
     max-width: 62ch;
@@ -244,8 +246,8 @@
   }
   .price-table td{
     padding: 16px 12px;
-    color: var(--text-dim);
-    font-size: 0.88rem;
+    color: var(--text-soft);
+    font-size: 0.9rem;
     line-height: 1.55;
     vertical-align: top;
   }
@@ -336,8 +338,8 @@
     margin: 14px 0 0;
     padding-left: 12px;
     border-left: 3px solid var(--gold);
-    color: var(--text-dim);
-    font-size: 0.85rem;
+    color: var(--text-soft);
+    font-size: 0.88rem;
     line-height: 1.6;
   }
   p.note strong{ color: var(--paper); }
@@ -355,9 +357,15 @@
     border-left: 3px solid var(--red);
     background: var(--ink-panel);
     padding: 14px 16px;
-    font-size: 0.86rem;
+    font-size: 0.9rem;
     line-height: 1.6;
-    color: var(--text-dim);
+    color: var(--text-soft);
+  }
+  /* Textos que se leen: Manrope, más legible en pantalla oscura (igual que
+     en index.html). Menú, botones, etiquetas y precios conservan su letra. */
+  p.tagline, p.lead, p.section-lead, .price-table td, p.note, .terms li, section.cta p{
+    font-family: var(--font-read);
+    font-weight: 500;
   }
   .terms li strong{ display: block; color: var(--paper); font-size: 0.92rem; margin-bottom: 2px; }
 
@@ -369,7 +377,7 @@
     background: linear-gradient(135deg, rgba(200,30,42,0.12), rgba(23,17,15,0.9) 60%);
     scroll-margin-top: calc(var(--nav-h) + 20px);
   }
-  section.cta p{ color: var(--text-dim); line-height: 1.7; margin: 0 0 20px; max-width: 58ch; }
+  section.cta p{ color: var(--text-soft); line-height: 1.7; margin: 0 0 20px; max-width: 58ch; }
   .cta-actions{ display: flex; flex-wrap: wrap; gap: 12px; }
   a.btn{
     display: inline-flex; align-items: center; gap: 8px;
@@ -560,7 +568,7 @@
     <h2>Pide tu cotización</h2>
     <p>Cuéntame qué necesitas, para cuándo y, si ya tienes, envíame referencias. Te respondo con el precio exacto.</p>
     <div class="cta-actions">
-      <a class="btn btn-primary" id="waLink" href="https://wa.me/573203048709?text=Hola%20Santiago%2C%20quiero%20una%20cotizaci%C3%B3n" target="_blank" rel="noopener">WhatsApp <span aria-hidden="true">↗</span></a>
+      <a class="btn btn-primary" id="waLink" href="https://wa.me/573103788349?text=Hola%20Santiago%2C%20quiero%20una%20cotizaci%C3%B3n" target="_blank" rel="noopener">WhatsApp <span aria-hidden="true">↗</span></a>
       <a class="btn btn-ghost" id="mailLink" href="mailto:santiago.floreztrujillo@gmail.com?subject=Cotizaci%C3%B3n">santiago.floreztrujillo@gmail.com</a>
     </div>
   </section>

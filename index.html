@@ -30,8 +30,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Shippori Mincho: serif de pincel japonés, para títulos grandes.
-     Zen Kaku Gothic New: sans geométrica usada en UI de juegos JP, para menú y cuerpo. -->
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+     Zen Kaku Gothic New: sans geométrica usada en UI de juegos JP, para menú, botones y etiquetas.
+     Manrope: para los textos que se leen (párrafos y descripciones), más legible en pantalla oscura. -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   /* =====================================================================
      PALETA — inspirada en el rojo/negro de Persona 5 y el tono más
@@ -46,6 +47,8 @@
     --red-deep:   #7d0f18;
     --gold:       #a8843f;
     --text-dim:   #9c8f82;
+    --text-soft:  #c2b5a5;  /* textos secundarios que sí se leen (entradas, descripciones) */
+    --font-read:  'Manrope', 'Segoe UI', system-ui, sans-serif;
     --nav-h: 54px;
     --frame-pad: clamp(20px, 4vw, 56px); /* margen lateral del contenido */
   }
@@ -317,11 +320,13 @@
     text-shadow: 3px 3px 0 var(--red-deep);
   }
   p.tagline{
-    color: var(--text-dim);
-    font-size: clamp(0.95rem, 2vw, 1.2rem);
+    font-family: var(--font-read);
+    color: var(--text-soft);
+    font-size: clamp(1rem, 2vw, 1.22rem);
+    line-height: 1.6;
     max-width: 48ch;
     margin: 0;
-    font-weight: 400;
+    font-weight: 500;
   }
   /* Credencial destacada del inicio en la parte de audio. */
   p.hero-tour{
@@ -362,13 +367,13 @@
   /* El correo va en minúsculas y puede partirse, para que quepa en el celular. */
   a.hero-cta.is-mail{ text-transform: none; letter-spacing: 0; font-weight: 700; max-width: 100%; overflow-wrap: anywhere; }
 
-  /* Frases clave resaltadas con trazo de marcador: quien lee en diagonal
-     se queda con lo importante. */
+  /* Frases clave en bloque rojo con letra negra, como las etiquetas de
+     Persona 5: quien lee en diagonal se queda con lo importante. */
   mark.hl{
-    background: linear-gradient(transparent 60%, rgba(200,30,42,0.42) 60%, rgba(200,30,42,0.42) 92%, transparent 92%);
-    color: var(--paper);
-    font-weight: 700;
-    padding: 0 2px;
+    background: var(--red);
+    color: var(--ink);
+    font-weight: 800;
+    padding: 1px 4px;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
   }
@@ -494,15 +499,22 @@
     border-left: 4px solid var(--red);
     padding-left: 14px;
   }
-  section.reveal p{ line-height: 1.8; color: var(--paper); font-weight: 400; max-width: 62ch; }
-  section.reveal p.dim{ color: var(--text-dim); }
+  section.reveal p{
+    font-family: var(--font-read);
+    font-size: 1.0625rem;
+    line-height: 1.72;
+    color: var(--paper);
+    font-weight: 500;
+    max-width: 62ch;
+  }
+  section.reveal p.dim{ color: var(--text-soft); }
 
   .stat-row{
     display:flex; flex-wrap:wrap; gap: 10px 28px;
     margin: 24px 0 0; padding-top: 18px;
     border-top: 1px solid var(--red-deep);
   }
-  .stat-row div{ font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; }
+  .stat-row div{ font-family: var(--font-read); font-size: 0.88rem; color: var(--text-soft); line-height: 1.6; }
   .stat-row strong{ display:block; color: var(--paper); font-weight:700; font-size: 0.95rem; margin-bottom: 4px; }
 
   .project-grid{
@@ -521,7 +533,7 @@
      código, para el celular); "dense" sube «Pensando en ti» al hueco de la
      derecha del primer mix en vez de dejarlo vacío. */
   .music-grid{ grid-auto-flow: row dense; }
-  section.reveal p.section-lead{ margin: -8px 0 24px; font-size: 0.9rem; }
+  section.reveal p.section-lead{ margin: -8px 0 24px; font-size: 1.02rem; }
   /* Categoría del proyecto, encima del título. */
   .project-card .kicker{
     display: block;
@@ -554,7 +566,7 @@
     margin: 0 0 6px;
     font-weight:700;
   }
-  .project-card p{ font-size: 0.9rem; margin:0; max-width: none; }
+  section.reveal .project-card p{ font-size: 0.95rem; line-height: 1.65; margin:0; max-width: none; }
   .project-card .tag{
     display:inline-block;
     margin-top:10px;
@@ -737,8 +749,8 @@
   .meter[data-level="2"] i:nth-child(-n+2),
   .meter[data-level="3"] i:nth-child(-n+3){ background: var(--red); }
   section.reveal .skill p{
-    font-size: 0.85rem; line-height: 1.6;
-    color: var(--text-dim);
+    font-size: 0.88rem; line-height: 1.6;
+    color: var(--text-soft);
     margin: 6px 0 0; max-width: none;
   }
   .skill-proof{ display:block; margin-top: 4px; font-size: 0.75rem; color: var(--gold); }
@@ -1122,15 +1134,18 @@
     padding: 20px 20px 18px;
     border: 1px solid var(--red-deep);
     background: var(--ink-panel);
-    color: var(--text-dim);
+    color: var(--text-soft);
     text-decoration: none;
-    font-size: 0.88rem;
+    font-family: var(--font-read);
+    font-weight: 500;
+    font-size: 0.92rem;
     line-height: 1.6;
     transition: border-color 0.25s ease, box-shadow 0.35s ease, transform 0.25s ease;
   }
   .service-glyph{ font-family: 'Shippori Mincho', serif; font-size: 1.6rem; line-height: 1; color: var(--red); }
   a.service strong{ font-family: 'Shippori Mincho', serif; font-size: 1.15rem; color: var(--paper); margin-top: 6px; }
   .service-more{
+    font-family: 'Zen Kaku Gothic New', sans-serif;
     margin-top: auto; padding-top: 8px;
     font-size: 0.72rem; font-weight: 700;
     letter-spacing: 0.08em; text-transform: uppercase;
@@ -1390,8 +1405,8 @@
     <div class="hero-actions">
       <a class="hero-cta" href="#proyectos" data-only="diseno">Ver proyectos <span aria-hidden="true">↓</span></a>
       <a class="hero-cta" href="#conciertos" data-only="audio">Ver conciertos <span aria-hidden="true">↓</span></a>
-      <a class="hero-cta is-ghost" href="https://wa.me/573203048709?text=Hola%20Santiago%2C%20vi%20tu%20portafolio%20de%20dise%C3%B1o%20y%20quiero%20una%20cotizaci%C3%B3n" target="_blank" rel="noopener" data-only="diseno">Cotizar por WhatsApp <span aria-hidden="true">↗</span></a>
-      <a class="hero-cta is-ghost" href="https://wa.me/573203048709?text=Hola%20Santiago%2C%20vi%20tu%20portafolio%20de%20audio%20y%20quiero%20una%20cotizaci%C3%B3n" target="_blank" rel="noopener" data-only="audio">Cotizar por WhatsApp <span aria-hidden="true">↗</span></a>
+      <a class="hero-cta is-ghost" href="https://wa.me/573103788349?text=Hola%20Santiago%2C%20vi%20tu%20portafolio%20de%20dise%C3%B1o%20y%20quiero%20una%20cotizaci%C3%B3n" target="_blank" rel="noopener" data-only="diseno">Cotizar por WhatsApp <span aria-hidden="true">↗</span></a>
+      <a class="hero-cta is-ghost" href="https://wa.me/573103788349?text=Hola%20Santiago%2C%20vi%20tu%20portafolio%20de%20audio%20y%20quiero%20una%20cotizaci%C3%B3n" target="_blank" rel="noopener" data-only="audio">Cotizar por WhatsApp <span aria-hidden="true">↗</span></a>
     </div>
     <div class="scroll-cue"><span></span>scroll</div>
   </header>
@@ -1987,8 +2002,8 @@
     <p data-only="diseno">Para propuestas de ilustración, diseño o colaboraciones, escríbeme. Cuéntame <mark class="hl">qué necesitas y para cuándo</mark>, y te respondo con una cotización.</p>
     <p data-only="audio">Para sonido en vivo, montaje, mezcla o DJ para tu evento, escríbeme. Cuéntame <mark class="hl">la fecha, el lugar y qué necesitas</mark>, y te respondo con una cotización.</p>
     <div class="contact-actions">
-      <a class="hero-cta" href="https://wa.me/573203048709?text=Hola%20Santiago%2C%20vi%20tu%20portafolio%20de%20dise%C3%B1o%20y%20quiero%20una%20cotizaci%C3%B3n" target="_blank" rel="noopener" data-only="diseno">WhatsApp <span aria-hidden="true">↗</span></a>
-      <a class="hero-cta" href="https://wa.me/573203048709?text=Hola%20Santiago%2C%20vi%20tu%20portafolio%20de%20audio%20y%20quiero%20una%20cotizaci%C3%B3n" target="_blank" rel="noopener" data-only="audio">WhatsApp <span aria-hidden="true">↗</span></a>
+      <a class="hero-cta" href="https://wa.me/573103788349?text=Hola%20Santiago%2C%20vi%20tu%20portafolio%20de%20dise%C3%B1o%20y%20quiero%20una%20cotizaci%C3%B3n" target="_blank" rel="noopener" data-only="diseno">WhatsApp <span aria-hidden="true">↗</span></a>
+      <a class="hero-cta" href="https://wa.me/573103788349?text=Hola%20Santiago%2C%20vi%20tu%20portafolio%20de%20audio%20y%20quiero%20una%20cotizaci%C3%B3n" target="_blank" rel="noopener" data-only="audio">WhatsApp <span aria-hidden="true">↗</span></a>
       <a class="hero-cta is-ghost is-mail" href="mailto:santiago.floreztrujillo@gmail.com">santiago.floreztrujillo@gmail.com</a>
     </div>
     <p class="dim">¿Quieres saber cuánto cuesta? <a class="contact-link" href="precios.html" data-only="diseno">Mira mis precios&nbsp;→</a><a class="contact-link" href="precios.html?modo=audio" data-only="audio">Mira mis precios&nbsp;→</a></p>
