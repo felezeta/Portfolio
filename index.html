@@ -25,6 +25,13 @@
     var m = null;
     try { m = new URLSearchParams(location.search).get('modo'); } catch (e) {}
     document.documentElement.setAttribute('data-mode', m === 'audio' ? 'audio' : 'diseno');
+    // Pantalla de bienvenida para elegir diseño o audio: solo al llegar a la
+    // dirección limpia. No sale con ?modo, con #sección, si ya eligió en esta
+    // pestaña ni si viene de otra página del sitio (por ejemplo precios).
+    var chosen = false, internal = false;
+    try { chosen = sessionStorage.getItem('portafolio-elegido') === '1'; } catch (e) {}
+    try { internal = new URL(document.referrer).origin === location.origin; } catch (e) {}
+    if (!m && !location.hash && !chosen && !internal) document.documentElement.setAttribute('data-gate', '');
   })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -267,6 +274,281 @@
     .mode-switch.hint .mode-chip{ animation: none; }
     html[data-mode="audio"] .mode-rings i{ animation: none; }
     .mode-menu{ animation: none; }
+  }
+
+  /* Consejo junto al logo: aparece al entrar y al llegar al final de la
+     página, para que se note que el logo es el menú. */
+  .mode-tip{
+    position: fixed;
+    top: calc(clamp(84px, 12vw, 170px) + 14px);
+    right: 10px;
+    z-index: 56;
+    width: min(300px, calc(100vw - 20px));
+    display: flex; align-items: flex-start;
+    background: var(--ink-panel);
+    border: 1px solid var(--red);
+    box-shadow: 0 0 0 1px rgba(200,30,42,0.25), 0 18px 50px rgba(0,0,0,0.75);
+    animation: tipIn 0.35s cubic-bezier(.2,.9,.3,1);
+  }
+  .mode-tip[hidden]{ display: none; }
+  .mode-tip.is-leaving{ animation: tipOut 0.25s ease forwards; }
+  /* Flecha que apunta al centro del logo. */
+  .mode-tip::before{
+    content: "";
+    position: absolute;
+    top: -9px;
+    right: calc(clamp(84px, 12vw, 170px) / 2 - 18px);
+    width: 16px; height: 16px;
+    background: var(--ink-panel);
+    border-left: 1px solid var(--red);
+    border-top: 1px solid var(--red);
+    transform: rotate(45deg);
+  }
+  .mode-tip-text{
+    all: unset;
+    cursor: pointer;
+    flex: 1;
+    display: grid; gap: 6px;
+    padding: 12px 4px 13px 14px;
+    font-family: var(--font-read);
+    font-weight: 500;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--paper);
+  }
+  .mode-tip-text b{ color: var(--red); font-weight: 800; }
+  .mode-tip-kicker{
+    justify-self: start;
+    padding: 1px 7px;
+    background: var(--red);
+    color: var(--ink);
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 0.62rem; font-weight: 900;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .mode-tip-close{
+    all: unset;
+    cursor: pointer;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    line-height: 1;
+    color: var(--text-dim);
+  }
+  .mode-tip-text:focus-visible, .mode-tip-close:focus-visible{ outline: 2px solid var(--red); outline-offset: -2px; }
+  @media (hover: hover){ .mode-tip-close:hover{ color: var(--paper); } }
+  @keyframes tipIn{
+    from{ opacity: 0; transform: translateY(-8px); }
+    to{ opacity: 1; transform: none; }
+  }
+  @keyframes tipOut{ to{ opacity: 0; transform: translateY(-8px); } }
+  /* Mientras el consejo está a la vista, el logo late en rojo. */
+  .mode-switch.calling .corner-logo{ animation: logoCall 1.3s ease-in-out infinite; }
+  @keyframes logoCall{
+    0%, 100%{ filter: drop-shadow(0 2px 10px rgba(0,0,0,0.55)); }
+    50%{ filter: drop-shadow(0 0 18px rgba(200,30,42,0.95)); }
+  }
+
+  /* =====================================================================
+     BIENVENIDA — al entrar por la dirección limpia, la persona elige entre
+     diseño y audio antes de ver la página (data-gate en <html>, lo pone el
+     <script> del <head>). Queda debajo del logo, que sigue a la vista.
+     ===================================================================== */
+  .gate{ display: none; }
+  html[data-gate] body{ overflow: hidden; }
+  /* Todavía no hay modo elegido: el logo no muestra la etiqueta. */
+  html[data-gate] .mode-chip{ display: none; }
+  html[data-gate] .gate{
+    position: fixed; inset: 0;
+    z-index: 54;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: clamp(14px, 2.6vh, 28px);
+    padding: clamp(20px, 4vh, 44px) var(--frame-pad);
+    background: var(--ink);
+    overflow-y: auto;
+    outline: none;
+  }
+  .gate-head{ padding-right: clamp(84px, 12vw, 170px); }
+  .gate-eyebrow{
+    display: flex; align-items: center; gap: 10px;
+    margin: 0 0 10px;
+    color: var(--paper);
+    font-size: 0.74rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .gate-eyebrow .hanko{ width: 26px; height: 26px; }
+  .gate-name{
+    margin: 0;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 800;
+    font-size: clamp(1.9rem, 5vw, 3.6rem);
+    line-height: 1.05;
+    color: var(--paper);
+    text-shadow: 3px 3px 0 var(--red-deep);
+    text-wrap: balance;
+  }
+  .gate-lead{
+    margin: 12px 0 0;
+    font-family: var(--font-read);
+    font-weight: 600;
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    color: var(--text-soft);
+  }
+  .gate-options{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(12px, 2vw, 22px);
+    min-height: 0;
+  }
+  .gate-option{
+    all: unset;
+    box-sizing: border-box;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    min-height: 260px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: clamp(18px, 3vw, 34px);
+    background: var(--ink-panel);
+    border: 1px solid var(--red-deep);
+    transition: border-color 0.25s ease, box-shadow 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .gate-option:hover, .gate-option:focus-visible{
+    border-color: var(--red);
+    box-shadow: 0 0 0 1px var(--red), 0 0 40px rgba(200,30,42,0.35);
+  }
+  .gate-option:focus-visible{ outline: 2px solid var(--paper); outline-offset: 4px; }
+  /* Arte de fondo de cada opción, oscurecido abajo para que el texto se lea. */
+  .gate-art{ position: absolute; inset: 0; z-index: -1; }
+  .gate-art::after{
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(12,10,10,0) 0%, rgba(12,10,10,0.3) 36%, rgba(12,10,10,0.94) 64%, rgba(12,10,10,0.98) 100%);
+  }
+  .gate-art-diseno img{
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: 35% 35%;
+    filter: saturate(0.85) contrast(1.05);
+    transition: transform 0.6s cubic-bezier(.2,.9,.3,1);
+  }
+  .gate-art-audio{
+    background: radial-gradient(ellipse 55% 50% at 50% 38%, rgba(200,30,42,0.42), transparent 72%);
+  }
+  .gate-pass{
+    position: absolute;
+    left: 50%; top: 5%;
+    height: 56%; width: auto;
+    transform-origin: 50% 120%;
+    filter: drop-shadow(0 14px 22px rgba(0,0,0,0.6));
+    transition: transform 0.6s cubic-bezier(.2,.9,.3,1);
+  }
+  .gate-pass:nth-child(1){ transform: translateX(-50%) rotate(-16deg); }
+  .gate-pass:nth-child(2){ transform: translateX(-50%); z-index: 1; }
+  .gate-pass:nth-child(3){ transform: translateX(-50%) rotate(16deg); }
+  @media (hover: hover){
+    .gate-option:hover .gate-art-diseno img{ transform: scale(1.06); }
+    .gate-option:hover .gate-pass:nth-child(1){ transform: translateX(-50%) rotate(-24deg); }
+    .gate-option:hover .gate-pass:nth-child(3){ transform: translateX(-50%) rotate(24deg); }
+  }
+  .gate-body{ display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .gate-heading{ display: flex; align-items: baseline; gap: 12px; }
+  .gate-glyph{
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    color: var(--red);
+  }
+  .gate-title{
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    color: var(--paper);
+    text-shadow: 3px 3px 0 var(--red-deep);
+  }
+  .gate-desc{
+    font-family: var(--font-read);
+    font-weight: 500;
+    font-size: clamp(0.92rem, 1.4vw, 1.05rem);
+    line-height: 1.5;
+    color: var(--text-soft);
+  }
+  .gate-credit{
+    padding: 2px 7px;
+    background: var(--red);
+    color: var(--ink);
+    font-family: var(--font-read);
+    font-weight: 800;
+    font-size: clamp(0.8rem, 1.2vw, 0.9rem);
+    line-height: 1.45;
+  }
+  .gate-cta{
+    margin-top: 4px;
+    padding: 10px 26px 10px 18px;
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: 900;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    clip-path: polygon(0 0, 100% 0, 92% 100%, 0% 100%);
+    transition: background 0.2s ease;
+  }
+  .gate-option:hover .gate-cta, .gate-option:focus-visible .gate-cta{ background: var(--red); }
+  .gate-foot{
+    margin: 0;
+    text-align: center;
+    text-wrap: balance;
+    font-size: 0.74rem; font-weight: 700;
+    letter-spacing: 0.08em; line-height: 1.6;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .gate-foot strong{ color: var(--paper); }
+  /* Entrada: aparece cuando termina la pantalla de carga. */
+  body.loading .gate-head, body.loading .gate-option, body.loading .gate-foot{ opacity: 0; }
+  body:not(.loading) .gate-head,
+  body:not(.loading) .gate-option,
+  body:not(.loading) .gate-foot{ animation: gateIn 0.6s cubic-bezier(.2,.9,.3,1) both; }
+  body:not(.loading) .gate-option:nth-child(1){ animation-delay: 0.12s; }
+  body:not(.loading) .gate-option:nth-child(2){ animation-delay: 0.22s; }
+  body:not(.loading) .gate-foot{ animation-delay: 0.4s; }
+  @keyframes gateIn{
+    from{ opacity: 0; transform: translateY(18px); }
+    to{ opacity: 1; transform: none; }
+  }
+  /* En celular siguen lado a lado, como tarjetas verticales, para que las
+     dos opciones se vean sin bajar. */
+  @media (max-width: 700px){
+    html[data-gate] .gate{ gap: 14px; padding: 18px 16px 14px; }
+    .gate-eyebrow{ display: none; }
+    .gate-name{ font-size: 1.6rem; }
+    .gate-lead{ margin-top: 8px; font-size: 0.98rem; }
+    .gate-options{ gap: 10px; }
+    .gate-option{ min-height: 0; padding: 14px 12px; }
+    /* Mismo alto de texto en las dos, para que títulos y botones queden alineados. */
+    .gate-body{ gap: 8px; min-height: 12.6rem; }
+    .gate-cta{ margin-top: auto; }
+    .gate-heading{ gap: 6px; }
+    .gate-glyph, .gate-title{ font-size: 1.55rem; }
+    .gate-desc{ font-size: 0.84rem; line-height: 1.4; }
+    .gate-credit{ padding: 2px 5px; font-size: 0.76rem; line-height: 1.4; }
+    .gate-cta{ padding: 7px 20px 7px 12px; font-size: 0.74rem; }
+    .gate-art-diseno img{ object-position: 14% 30%; }
+    .gate-pass{ top: 5%; height: 38%; }
+    .gate-foot{ font-size: 0.66rem; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .mode-tip, .mode-tip.is-leaving{ animation: none; }
+    .mode-switch.calling .corner-logo{ animation: none; filter: drop-shadow(0 0 16px rgba(200,30,42,0.8)); }
+    body:not(.loading) .gate-head,
+    body:not(.loading) .gate-option,
+    body:not(.loading) .gate-foot{ animation: none; }
+    .gate-art-diseno img, .gate-pass{ transition: none; }
   }
 
   .frame{
@@ -1327,6 +1609,11 @@
     .loader-mark{ animation: none; }
     #preloader{ transition: opacity 0.15s linear; }
   }
+  /* Si después viene la bienvenida, la carga no muestra ningún modo todavía. */
+  .loader-gate{ display: none; }
+  html[data-gate] .loader-gate{ display: inline; }
+  html[data-gate] #preloader [data-only]{ display: none !important; }
+  html[data-gate] .loader-mark{ font-size: 1.15rem; }
   body.loading{ overflow: hidden; }
 </style>
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
@@ -1335,10 +1622,43 @@
 <body class="loading">
 
 <div id="preloader">
-  <div class="loader-mark"><span data-only="diseno">影</span><span data-only="audio">音</span></div>
+  <div class="loader-mark"><span data-only="diseno">影</span><span data-only="audio">音</span><span class="loader-gate">影音</span></div>
   <div class="loader-bar-track"><div class="loader-bar-fill" id="loaderFill"></div></div>
   <div class="loader-pct" id="loaderPct">0%</div>
-  <div class="loader-tip"><span data-only="diseno">Ilustración · diseño · 3D</span><span data-only="audio">Producción · mezcla · sonido en vivo</span></div>
+  <div class="loader-tip"><span data-only="diseno">Ilustración · diseño · 3D</span><span data-only="audio">Producción · mezcla · sonido en vivo</span><span class="loader-gate">Diseño · Audio</span></div>
+</div>
+
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle" aria-describedby="gateLead" tabindex="-1">
+  <div class="gate-head">
+    <p class="gate-eyebrow"><svg class="hanko" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="#c81e2a" stroke-width="3"/><text x="20" y="26" text-anchor="middle" font-size="12" fill="#c81e2a" font-family="serif">FÉLE</text></svg>Portafolio · Bogotá</p>
+    <h2 class="gate-name" id="gateTitle">Santiago Flórez Trujillo</h2>
+    <p class="gate-lead" id="gateLead">¿Qué quieres ver?</p>
+  </div>
+  <div class="gate-options">
+    <button class="gate-option" type="button" data-set-mode="diseno">
+      <span class="gate-art gate-art-diseno" aria-hidden="true"><img src="img/ilustraciones/ninja-arana-jefe-s.jpg" alt="" width="800" height="450" loading="lazy" decoding="async"></span>
+      <span class="gate-body">
+        <span class="gate-heading"><span class="gate-glyph" aria-hidden="true">影</span><strong class="gate-title">Diseño</strong></span>
+        <span class="gate-desc">Ilustración, diseño textil, producto y 3D</span>
+        <span class="gate-credit">Estudios en HTK Academy Hamburg</span>
+        <span class="gate-cta">Entrar <span aria-hidden="true">→</span></span>
+      </span>
+    </button>
+    <button class="gate-option" type="button" data-set-mode="audio">
+      <span class="gate-art gate-art-audio" aria-hidden="true">
+        <img class="gate-pass" src="img/audio/pase-doja-poster.webp" alt="" width="720" height="900" loading="lazy" decoding="async">
+        <img class="gate-pass" src="img/audio/pase-linkin-poster.webp" alt="" width="720" height="900" loading="lazy" decoding="async">
+        <img class="gate-pass" src="img/audio/pase-charlie-poster.webp" alt="" width="720" height="900" loading="lazy" decoding="async">
+      </span>
+      <span class="gate-body">
+        <span class="gate-heading"><span class="gate-glyph" aria-hidden="true">音</span><strong class="gate-title">Audio</strong></span>
+        <span class="gate-desc">Sonido en vivo, mezcla, producción musical y DJ</span>
+        <span class="gate-credit">Crew en giras de Linkin Park, Doja Cat y Charlie Puth</span>
+        <span class="gate-cta">Entrar <span aria-hidden="true">→</span></span>
+      </span>
+    </button>
+  </div>
+  <p class="gate-foot">Puedes cambiar cuando quieras: <strong>presiona el logo</strong> <span aria-hidden="true">↗</span></p>
 </div>
 
 <button class="mode-switch" id="modeSwitch" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="modeMenu" aria-label="Menú: portafolio de diseño o de audio, y precios">
@@ -1364,6 +1684,10 @@
     <span class="mode-text"><strong>Precios</strong><span data-only="diseno">Diseño para merch y renders 3D</span><span data-only="audio">Mezcla, master y sonido en vivo</span></span>
     <span class="mode-check mode-arrow" aria-hidden="true">→</span>
   </a>
+</div>
+<div class="mode-tip" id="modeTip" hidden>
+  <button class="mode-tip-text" type="button" aria-controls="modeMenu"><span class="mode-tip-kicker">Consejo</span><span class="mode-tip-msg"></span></button>
+  <button class="mode-tip-close" type="button" aria-label="Cerrar consejo">✕</button>
 </div>
 <div class="mode-wipe" id="modeWipe" aria-hidden="true"><span class="mode-wipe-glyph"></span></div>
 
@@ -2180,6 +2504,7 @@
         setTimeout(() => {
           document.getElementById('preloader').classList.add('hidden');
           document.body.classList.remove('loading');
+          document.dispatchEvent(new Event('precarga-lista'));
         }, 400);
       }, remaining);
     }
@@ -2722,6 +3047,26 @@
     const items = options.concat(links);
     const GLYPH = { diseno: '影', audio: '音' };
     const TITLE = { diseno: 'Santiago Flórez Trujillo', audio: 'Santiago Flórez Trujillo — Audio' };
+    const OTHER = { diseno: 'audio', audio: 'diseno' };
+    // Bienvenida: mientras está abierta, lo de atrás no recibe foco ni clics.
+    const gate = document.getElementById('gate');
+    const behindGate = [document.querySelector('.frame'), document.getElementById('topNav')];
+    // Consejo junto al logo: al entrar y al llegar al final de la página.
+    const tip = document.getElementById('modeTip');
+    const tipMsg = tip.querySelector('.mode-tip-msg');
+    const TIPS = {
+      entrada: {
+        diseno: 'Presiona el logo para ver mi trabajo de <b>audio</b> o mis precios.',
+        audio: 'Presiona el logo para ver mi trabajo de <b>diseño</b> o mis precios.'
+      },
+      final: {
+        diseno: '¿También buscas <b>audio</b>? Presiona el logo: conciertos, mezcla y DJ.',
+        audio: '¿También buscas <b>diseño</b>? Presiona el logo: ilustración, ropa y 3D.'
+      }
+    };
+    const visited = new Set();   // modos que la persona ya vio en esta visita
+    const finalShown = new Set(); // modos en los que ya salió el consejo del final
+    let tipTimer = 0;
     let busy = false;
 
     function syncMenu(){
@@ -2732,6 +3077,8 @@
 
     function applyMode(mode){
       root.dataset.mode = mode;
+      visited.add(mode);
+      hideTip();
       syncMenu();
       resetVideos();
       // La dirección refleja el modo, así se puede compartir el enlace.
@@ -2747,7 +3094,40 @@
       root.style.scrollBehavior = '';
     }
 
+    function gateOpen(){ return root.hasAttribute('data-gate'); }
+    function closeGate(){
+      root.removeAttribute('data-gate');
+      behindGate.forEach(el => { el.inert = false; });
+      visited.add(root.dataset.mode);
+      try { sessionStorage.setItem('portafolio-elegido', '1'); } catch (e) {}
+      // Recién entra: se le muestra dónde está el menú.
+      setTimeout(() => showTip('entrada'), reduceMotion ? 300 : 900);
+    }
+
+    function showTip(kind){
+      if (!menu.hidden || gateOpen()) return;
+      tipMsg.innerHTML = TIPS[kind][root.dataset.mode];
+      tip.classList.remove('is-leaving');
+      tip.hidden = false;
+      toggle.classList.add('calling');
+      clearTimeout(tipTimer);
+      tipTimer = setTimeout(hideTip, 9000);
+      if (kind === 'entrada') { try { sessionStorage.setItem('consejo-logo', '1'); } catch (e) {} }
+    }
+    function hideTip(){
+      clearTimeout(tipTimer);
+      toggle.classList.remove('calling');
+      if (tip.hidden) return;
+      if (reduceMotion) { tip.hidden = true; return; }
+      tip.classList.add('is-leaving');
+      setTimeout(() => {
+        // Si volvió a aparecer mientras se iba, se queda.
+        if (tip.classList.contains('is-leaving')) { tip.hidden = true; tip.classList.remove('is-leaving'); }
+      }, 250);
+    }
+
     function openMenu(){
+      hideTip();
       menu.hidden = false;
       toggle.setAttribute('aria-expanded', 'true');
       toggle.classList.remove('hint');
@@ -2763,15 +3143,21 @@
 
     function setMode(mode){
       closeMenu(false);
-      if (busy || mode === root.dataset.mode) return;
-      if (reduceMotion) { applyMode(mode); return; }
+      // Desde la bienvenida también se entra al modo que ya está puesto.
+      const fromGate = gateOpen();
+      if (busy || (mode === root.dataset.mode && !fromGate)) return;
+      function enter(){
+        if (mode !== root.dataset.mode) applyMode(mode);
+        if (fromGate) closeGate();
+      }
+      if (reduceMotion) { enter(); return; }
       busy = true;
       wipe.firstElementChild.textContent = GLYPH[mode];
       wipe.className = 'mode-wipe';
       void wipe.offsetWidth; // reinicia la transición
       wipe.classList.add('is-in');
       setTimeout(() => {
-        applyMode(mode);
+        enter();
         wipe.classList.add('is-out');
         setTimeout(() => { wipe.className = 'mode-wipe'; busy = false; }, 450);
       }, 450);
@@ -2782,10 +3168,38 @@
     try { seen = localStorage.getItem('modo-visto') === '1'; } catch (e) {}
     if (!seen) toggle.classList.add('hint');
 
+    if (gateOpen()) {
+      behindGate.forEach(el => { el.inert = true; });
+      gate.querySelectorAll('[data-set-mode]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.setMode)));
+      gate.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && menu.hidden) { e.preventDefault(); setMode(root.dataset.mode); }
+      });
+    } else {
+      visited.add(root.dataset.mode);
+    }
+    // Al terminar la carga: foco en la bienvenida, o el consejo si no la hay
+    // (una vez por pestaña).
+    document.addEventListener('precarga-lista', () => {
+      if (gateOpen()) { gate.focus({ preventScroll: true }); return; }
+      let told = false;
+      try { told = sessionStorage.getItem('consejo-logo') === '1'; } catch (e) {}
+      if (!told) setTimeout(() => showTip('entrada'), 1200);
+    });
+    // Al llegar a Contacto sin haber visto el otro modo, se lo recuerda.
+    new IntersectionObserver(([entry]) => {
+      const mode = root.dataset.mode;
+      if (!entry.isIntersecting || gateOpen() || visited.has(OTHER[mode]) || finalShown.has(mode)) return;
+      finalShown.add(mode);
+      showTip('final');
+    }, { threshold: 0.35 }).observe(document.getElementById('contacto'));
+
+    tip.querySelector('.mode-tip-text').addEventListener('click', openMenu);
+    tip.querySelector('.mode-tip-close').addEventListener('click', hideTip);
+
     toggle.addEventListener('click', () => menu.hidden ? openMenu() : closeMenu(true));
     options.forEach(o => o.addEventListener('click', () => setMode(o.dataset.setMode)));
     document.addEventListener('click', e => {
-      if (!menu.hidden && !menu.contains(e.target) && !toggle.contains(e.target)) closeMenu(false);
+      if (!menu.hidden && !menu.contains(e.target) && !toggle.contains(e.target) && !tip.contains(e.target)) closeMenu(false);
     });
     menu.addEventListener('keydown', e => {
       const i = items.indexOf(document.activeElement);
