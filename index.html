@@ -18,6 +18,8 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Santiago Flórez Trujillo: diseño y audio. Pases de trabajo de Linkin Park, Doja Cat y Charlie Puth.">
 <meta name="twitter:card" content="summary_large_image">
+<!-- Estadísticas de visitas con GoatCounter: anónimas y sin cookies. Cuenta visitas y algunas acciones (qué modo eligen, el menú del logo, clics a WhatsApp y correo). -->
+<script data-goatcounter="https://felezeta.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <script>
   // Modo del portafolio (diseño / audio) decidido antes de pintar, para que
   // no parpadee. ?modo=audio en la dirección abre directo la parte de audio.
@@ -3039,6 +3041,17 @@
     }).observe(document.getElementById('conciertos'));
   })();
 
+  // Cuenta una acción en GoatCounter (solo su nombre, nada personal). Si el
+  // contador no cargó (bloqueador, sin internet), no hace nada.
+  function track(name){
+    try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: name, title: name, event: true }); } catch (e) {}
+  }
+  // Clics para contactar, según el modo en que está la persona.
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="https://wa.me/"], a[href^="mailto:"]');
+    if (a) track((a.href.startsWith('mailto:') ? 'correo-' : 'whatsapp-') + document.documentElement.dataset.mode);
+  });
+
   // Interruptor de modo en el logo: diseño ⇄ audio.
   (function(){
     const root = document.documentElement;
@@ -3150,6 +3163,7 @@
       // Desde la bienvenida también se entra al modo que ya está puesto.
       const fromGate = gateOpen();
       if (busy || (mode === root.dataset.mode && !fromGate)) return;
+      track((fromGate ? 'bienvenida-' : 'cambio-a-') + mode);
       function enter(){
         if (mode !== root.dataset.mode) applyMode(mode);
         if (fromGate) closeGate();
@@ -3197,10 +3211,12 @@
       showTip('final');
     }, { threshold: 0.35 }).observe(document.getElementById('contacto'));
 
-    tip.querySelector('.mode-tip-text').addEventListener('click', openMenu);
+    tip.querySelector('.mode-tip-text').addEventListener('click', () => { track('consejo-logo'); openMenu(); });
     tip.querySelector('.mode-tip-close').addEventListener('click', hideTip);
 
-    toggle.addEventListener('click', () => menu.hidden ? openMenu() : closeMenu(true));
+    toggle.addEventListener('click', () => {
+      if (menu.hidden) { track('menu-logo'); openMenu(); } else closeMenu(true);
+    });
     options.forEach(o => o.addEventListener('click', () => setMode(o.dataset.setMode)));
     document.addEventListener('click', e => {
       if (!menu.hidden && !menu.contains(e.target) && !toggle.contains(e.target) && !tip.contains(e.target)) closeMenu(false);
